@@ -1,0 +1,12 @@
+package cn.krl.visiteducationbackend.controller;
+
+import io.swagger.annotations.Api;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@Api(tags = "登录控制器")
+@RequestMapping("/login")
+public class LoginController {
+
+}

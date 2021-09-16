@@ -1,6 +1,6 @@
 package cn.krl.visiteducationbackend.service;
 
-import cn.krl.visiteducationbackend.dao.RecordQueryDTO;
+import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
 import cn.krl.visiteducationbackend.entity.Record;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

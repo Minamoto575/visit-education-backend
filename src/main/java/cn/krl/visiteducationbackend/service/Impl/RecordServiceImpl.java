@@ -1,6 +1,6 @@
 package cn.krl.visiteducationbackend.service.Impl;
 
-import cn.krl.visiteducationbackend.dao.RecordQueryDTO;
+import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
 import cn.krl.visiteducationbackend.entity.Record;
 import cn.krl.visiteducationbackend.mapper.RecordMapper;
 import cn.krl.visiteducationbackend.service.IRecordService;
