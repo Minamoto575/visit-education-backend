@@ -1,5 +1,6 @@
 package cn.krl.visiteducationbackend.service.Impl;
 
+import cn.krl.visiteducationbackend.dto.RecordDTO;
 import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
 import cn.krl.visiteducationbackend.entity.Record;
 import cn.krl.visiteducationbackend.mapper.RecordMapper;
@@ -8,6 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,5 +44,21 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper,Record> implemen
         // 当 total 为小于 0 或者设置 setSearchCount(false) 分页插件不会进行 count 查询
         // 要点!! 分页返回的对象与传入的对象是同一个
         return recordMapper.selectPageVo(page,state);
+    }
+
+    @Override
+    public boolean exist(RecordDTO recordDTO) {
+        String school = recordDTO.getSchoolName();
+        String subject = recordDTO.getSubjectName();
+        String code = recordDTO.getSubjectCode();
+        String teacher = recordDTO.getTeacherName();
+        String task = recordDTO.getTaskName();
+        String project = recordDTO.getProjectName();
+        List<Record> records = recordMapper.listTheSame(project,school,subject,code,teacher,task);
+        if(records==null){
+            return false;
+        }else {
+            return true;
+        }
     }
 }

@@ -30,7 +30,7 @@ public class Record {
 
     @ApiModelProperty(name = "subjectCode",value = "学科专业代码",dataType = "Long")
     @Excel(name = "学科专业代码")
-    private Long subjectCode;
+    private String subjectCode;
 
     @ApiModelProperty(name = "teacherName",value = "教师名称",dataType = "String")
     @Excel(name = "教师名称")

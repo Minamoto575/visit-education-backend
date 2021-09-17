@@ -8,16 +8,11 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Api("管理员传输对象")
-public class AdminDTO {
-    @NotNull
-    @ApiModelProperty(name = "id",value = "管理员id",dataType = "Long")
-    private Integer id;
-
+@Api(tags = "登录传输对象")
+public class LoginDTO {
     @NotNull
     @ApiModelProperty(name="name",value = "管理员名称",dataType = "String")
     private String name;

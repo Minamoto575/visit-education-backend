@@ -1,5 +1,6 @@
 package cn.krl.visiteducationbackend.service;
 
+import cn.krl.visiteducationbackend.dto.RecordDTO;
 import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
 import cn.krl.visiteducationbackend.entity.Record;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -32,5 +33,7 @@ public interface IRecordService extends IService<Record> {
      * @return 分页对象
      */
     IPage<Record> selectRecordPage(Page<Record> page, Integer state);
+
+    boolean exist(RecordDTO recordDTO);
 
 }

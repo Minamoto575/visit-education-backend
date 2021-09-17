@@ -2,6 +2,7 @@ package cn.krl.visiteducationbackend.controller;
 
 import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
 import cn.krl.visiteducationbackend.entity.Record;
+import cn.krl.visiteducationbackend.response.ResponseWrapper;
 import cn.krl.visiteducationbackend.service.IRecordService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,9 +28,17 @@ public class VisitorController {
      */
     @GetMapping("/search")
     @ApiOperation("根据项目、学校、学科名称查询")
-    public List<Record> listRecordsByDTO(@RequestBody RecordQueryDTO recordQueryDTO){
-        List<Record> records = recordService.listRecordsByDTO(recordQueryDTO);
-        return records;
+    public ResponseWrapper listRecordsByDTO(@RequestBody RecordQueryDTO recordQueryDTO){
+        ResponseWrapper responseWrapper;
+        try {
+            List<Record> records = recordService.listRecordsByDTO(recordQueryDTO);
+            responseWrapper=ResponseWrapper.markSuccess();
+            responseWrapper.setExtra("records",records);
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseWrapper=ResponseWrapper.markError();
+        }
+        return responseWrapper;
     }
 
     /**
@@ -39,9 +48,17 @@ public class VisitorController {
      */
     @GetMapping("/search/{name}")
     @ApiOperation("根据老师名称模糊查询")
-    public List<Record> listRecordsByTeacherName(@PathVariable String name){
-        List<Record> records= recordService.listRecordsByTeacherName(name);
-        return records;
+    public ResponseWrapper listRecordsByTeacherName(@PathVariable String name){
+        ResponseWrapper responseWrapper;
+        try {
+            List<Record> records= recordService.listRecordsByTeacherName(name);
+            responseWrapper=ResponseWrapper.markSuccess();
+            responseWrapper.setExtra("records",records);
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseWrapper=ResponseWrapper.markError();
+        }
+        return responseWrapper;
     }
 
 }

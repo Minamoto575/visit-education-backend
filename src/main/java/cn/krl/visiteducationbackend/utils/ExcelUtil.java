@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -30,7 +31,8 @@ import java.util.NoSuchElementException;
  * Excel导入导出工具类
  */
 
-public class ExcelUtils {
+@Component
+public class ExcelUtil {
 
     /**
      * excel 导出
@@ -147,7 +149,8 @@ public class ExcelUtils {
      * @return
      */
     public static <T> List<T> importExcel(MultipartFile file, Class<T> pojoClass) throws IOException {
-        return importExcel(file, 1, 1, pojoClass);
+        System.out.println(file);
+        return importExcel(file, 0, 1, pojoClass);
     }
 
     /**

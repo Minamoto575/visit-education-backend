@@ -29,4 +29,19 @@ public interface RecordMapper extends BaseMapper<Record> {
      * @return 分页对象
      */
     IPage<Record> selectPageVo(Page<?> page, Integer state);
+
+
+    /**
+     * 查询是否有一样的record
+     * @param project
+     * @param school
+     * @param subject
+     * @param code
+     * @param teacher
+     * @param task
+     * @return
+     */
+    List<Record> listTheSame(@Param("projectName") String project,@Param("schoolName") String school,@Param("subjectName") String subject,@Param("subjectCode") String code,@Param("teacherName") String teacher,@Param("taskName") String task);
+
+
 }
