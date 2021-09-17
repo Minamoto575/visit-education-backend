@@ -18,7 +18,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper,Admin> implements 
 
     @Override
     public Admin getByName(String name) {
-        return adminMapper.getByName(name);
+        return adminMapper.getByName(name).get(0);
     }
 
     @Override

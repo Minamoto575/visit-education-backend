@@ -1,5 +1,7 @@
 package cn.krl.visiteducationbackend.mapper;
 
+import cn.krl.visiteducationbackend.dto.RecordDTO;
+import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
 import cn.krl.visiteducationbackend.entity.Record;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -12,13 +14,12 @@ import java.util.List;
 @Mapper
 public interface RecordMapper extends BaseMapper<Record> {
     /**
-     *根据查询请求的DTO进行组合查询
-     * @param project   项目名称
-     * @param school    学校名称
-     * @param subject   学科名称
+     * 根据查询请求的DTO进行组合查询
+     * @param recordQueryDTO
      * @return
      */
-    List<Record> listRecordsByQueryDTO(@Param("projectName") String project,@Param("schoolName") String school,@Param("subjectName") String subject);
+    List<Record> listRecordsByQueryDTO(@Param("recordQueryDTO")RecordQueryDTO recordQueryDTO);
+
     /**
      * <p>
      * 查询 : 根据state状态查询Record列表，分页显示
@@ -33,15 +34,10 @@ public interface RecordMapper extends BaseMapper<Record> {
 
     /**
      * 查询是否有一样的record
-     * @param project
-     * @param school
-     * @param subject
-     * @param code
-     * @param teacher
-     * @param task
+     * @param recordDTO
      * @return
      */
-    List<Record> listTheSame(@Param("projectName") String project,@Param("schoolName") String school,@Param("subjectName") String subject,@Param("subjectCode") String code,@Param("teacherName") String teacher,@Param("taskName") String task);
+    List<Record> listTheSame(@Param("recordDTO")RecordDTO recordDTO);
 
 
 }

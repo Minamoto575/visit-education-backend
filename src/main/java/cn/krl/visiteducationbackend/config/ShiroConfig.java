@@ -1,6 +1,5 @@
 package cn.krl.visiteducationbackend.config;
 
-import cn.krl.visiteducationbackend.entity.Admin;
 import cn.krl.visiteducationbackend.shiro.realm.AdminRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.realm.Realm;
@@ -25,18 +24,12 @@ public class ShiroConfig {
         Map<String, String> map = new HashMap<String, String>();
 
         //表示这个为公共资源 一定是在受限资源上面
-//        map.put("/login","anon");
-//        map.put("/visitor","anon");
-//        map.put("/swagger-ui/index.html","anon");
-//        map.put("/swagger-ui.html", "anon");
-//        map.put("/swagger-resources", "anon");
-//        map.put("/v2/api-docs", "anon");
-//        map.put("/webjars/springfox-swagger-ui/**", "anon");
-//        map.put("/configuration/security", "anon");
-//        map.put("/configuration/ui", "anon");
+        map.put("/admin/login","anon");
+        map.put("/admin","anon");
+
 
         //表示这个受限资源需要认证和授权
-        map.put("/admin","authc");
+        //map.put("/admin","authc");
         // 设置认证界面路径
         shiroFilterFactoryBean.setLoginUrl("/login");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(map);

@@ -149,7 +149,7 @@ public class ExcelUtil {
      * @return
      */
     public static <T> List<T> importExcel(MultipartFile file, Class<T> pojoClass) throws IOException {
-        System.out.println(file);
+        //System.out.println(file);
         return importExcel(file, 0, 1, pojoClass);
     }
 

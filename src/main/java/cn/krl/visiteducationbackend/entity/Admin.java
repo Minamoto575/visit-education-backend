@@ -1,5 +1,7 @@
 package cn.krl.visiteducationbackend.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,17 +9,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
-
 @Data
+//@Entity
 @ApiModel(value = "管理员实体")
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("admin")
 public class Admin {
 
-    @ApiModelProperty(name = "id",value = "管理员id",dataType = "Long")
-    private Long id;
+    @TableId(value = "id",type = IdType.AUTO)
+    @ApiModelProperty(name = "id",value = "管理员id",dataType = "Integer")
+    private Integer id;
 
     @ApiModelProperty(name="name",value = "管理员名称",dataType = "String")
     private String name;

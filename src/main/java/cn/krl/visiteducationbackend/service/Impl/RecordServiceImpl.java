@@ -23,17 +23,17 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper,Record> implemen
 
     @Override
     public List<Record> listRecordsByDTO(RecordQueryDTO recordQueryDTO) {
-        String project = recordQueryDTO.getProjectName();
-        String school = recordQueryDTO.getSchoolName();
-        String subject = recordQueryDTO.getSubjectName();
-        List<Record> records=recordMapper.listRecordsByQueryDTO(project,school,subject);
+//        String project = recordQueryDTO.getProjectName();
+//        String school = recordQueryDTO.getSchoolName();
+//        String subject = recordQueryDTO.getSubjectName();
+        List<Record> records=recordMapper.listRecordsByQueryDTO(recordQueryDTO);
         return records;
     }
 
     @Override
     public List<Record> listRecordsByTeacherName(String name) {
         //模糊查询
-        List<Record> records = recordMapper.selectList(new QueryWrapper<Record>().like("teacher",name));
+        List<Record> records = recordMapper.selectList(new QueryWrapper<Record>().like("teacherName",name));
         return records;
     }
 
@@ -48,13 +48,13 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper,Record> implemen
 
     @Override
     public boolean exist(RecordDTO recordDTO) {
-        String school = recordDTO.getSchoolName();
-        String subject = recordDTO.getSubjectName();
-        String code = recordDTO.getSubjectCode();
-        String teacher = recordDTO.getTeacherName();
-        String task = recordDTO.getTaskName();
-        String project = recordDTO.getProjectName();
-        List<Record> records = recordMapper.listTheSame(project,school,subject,code,teacher,task);
+//        String school = recordDTO.getSchoolName();
+//        String subject = recordDTO.getSubjectName();
+//        String code = recordDTO.getSubjectCode();
+//        String teacher = recordDTO.getTeacherName();
+//        String task = recordDTO.getTaskName();
+//        String project = recordDTO.getProjectName();
+        List<Record> records = recordMapper.listTheSame(recordDTO);
         if(records==null){
             return false;
         }else {

@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 @Mapper
 public interface AdminMapper extends BaseMapper<Admin> {
     /**
@@ -12,5 +14,5 @@ public interface AdminMapper extends BaseMapper<Admin> {
      * @param name 用户名
      * @return
      */
-    Admin getByName(@Param("name") String name);
+    List<Admin> getByName(@Param("name") String name);
 }

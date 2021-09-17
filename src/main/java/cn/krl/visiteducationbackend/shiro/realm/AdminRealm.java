@@ -1,7 +1,7 @@
 package cn.krl.visiteducationbackend.shiro.realm;
 
 import cn.krl.visiteducationbackend.entity.Admin;
-import cn.krl.visiteducationbackend.service.Impl.AdminServiceImpl;
+import cn.krl.visiteducationbackend.service.IAdminService;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -17,7 +17,7 @@ import org.springframework.util.ObjectUtils;
 public class AdminRealm extends AuthorizingRealm {
 
     @Autowired
-    private AdminServiceImpl adminService;
+    private IAdminService adminService;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
