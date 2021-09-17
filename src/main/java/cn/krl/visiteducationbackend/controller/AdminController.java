@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -101,7 +100,6 @@ public class AdminController {
      */
     @PostMapping("/excel/")
     @ApiOperation("excel批量导入记录")
-    @Transactional
     public ResponseWrapper postByExcel(@RequestPart("file") MultipartFile file) throws IOException {
         ResponseWrapper responseWrapper;
         List<RecordDTO> records = ExcelUtil.importExcel(file,RecordDTO.class);

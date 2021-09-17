@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Api(tags = "记录的api")
+@Api(tags = "游客的api")
 @RequestMapping("/visitor")
 @Slf4j
 public class VisitorController {
