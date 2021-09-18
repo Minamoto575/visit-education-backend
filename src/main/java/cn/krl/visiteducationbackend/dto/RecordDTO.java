@@ -1,6 +1,6 @@
 package cn.krl.visiteducationbackend.dto;
 
-import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -18,31 +18,31 @@ public class RecordDTO {
 
     //@NotNull
     @ApiModelProperty(name = "schoolName",value = "学校名称",dataType = "String")
-    @Excel(name = "学校名称")
+    @ExcelProperty(value = "学校名称")
     private String schoolName;
 
     //@NotNull
     @ApiModelProperty(name = "subjectName",value = "学科专业名称",dataType = "String")
-    @Excel(name = "学科专业名称")
+    @ExcelProperty(value = "学科专业名称")
     private String subjectName;
 
     //@NotNull
     @ApiModelProperty(name = "subjectCode",value = "学科专业代码",dataType = "String")
-    @Excel(name = "学科专业代码")
+    @ExcelProperty(value = "学科专业代码")
     private String subjectCode;
 
     //@NotNull
     @ApiModelProperty(name = "teacherName",value = "教师名称",dataType = "String")
-    @Excel(name = "教师姓名")
+    @ExcelProperty(value = "教师姓名")
     private String teacherName;
 
     //@NotNull
     @ApiModelProperty(name = "taskName",value = "课题名称",dataType = "String")
-    @Excel(name = "课题名称")
+    @ExcelProperty(value = "课题名称")
     private String taskName;
 
     //@NotNull
     @ApiModelProperty(name = "projectName",value = "项目名称",dataType = "String")
-    @Excel(name = "项目名称")
+    @ExcelProperty(value = "项目名称")
     private String projectName;
 }

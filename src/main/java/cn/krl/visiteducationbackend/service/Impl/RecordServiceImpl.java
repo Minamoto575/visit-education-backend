@@ -48,17 +48,9 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper,Record> implemen
 
     @Override
     public boolean exist(RecordDTO recordDTO) {
-//        String school = recordDTO.getSchoolName();
-//        String subject = recordDTO.getSubjectName();
-//        String code = recordDTO.getSubjectCode();
-//        String teacher = recordDTO.getTeacherName();
-//        String task = recordDTO.getTaskName();
-//        String project = recordDTO.getProjectName();
-        List<Record> records = recordMapper.listTheSame(recordDTO);
-        if(records==null){
+        if(recordMapper.listTheSame(recordDTO).isEmpty()){
             return false;
-        }else {
-            return true;
         }
+        return true;
     }
 }

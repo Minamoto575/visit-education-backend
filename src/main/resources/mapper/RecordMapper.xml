@@ -27,5 +27,4 @@
       and #{recordQueryDTO.projectName}=projectName
     </select>
 
-
 </mapper>
