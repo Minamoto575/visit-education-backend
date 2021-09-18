@@ -30,16 +30,14 @@ public class RecordController {
 
     /**
      * 删除一条记录
-     * @param recordDTO 被删除的记录
+     * @param id
      * @return
      */
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete/{id}")
     @ApiOperation("删除一条记录")
-    public ResponseWrapper delete(@RequestBody @Valid RecordDTO recordDTO){
+    public ResponseWrapper delete(@RequestParam Integer id){
         ResponseWrapper responseWrapper;
-        Record record = new Record();
-        BeanUtils.copyProperties(recordDTO,record);
-        if(recordService.removeById(record)){
+        if(recordService.removeById(id)){
             responseWrapper=ResponseWrapper.markSuccess();
         }else{
             responseWrapper=ResponseWrapper.markParamError();
@@ -95,7 +93,7 @@ public class RecordController {
      * @return
      * @throws IOException
      */
-    @PostMapping("/upload")
+    @PostMapping("/upload/excel")
     @ApiOperation("excel批量导入记录")
     public ResponseWrapper postByExcel(@RequestPart("file") MultipartFile multipartFile) throws IOException {
         ResponseWrapper responseWrapper;
@@ -114,7 +112,7 @@ public class RecordController {
      * @param recordQueryDTO 请求dto 包含项目、学校、学科名称
      * @return
      */
-    @PostMapping("/search")
+    @PostMapping("/search/combination")
     @ApiOperation("根据项目、学校、学科名称查询")
     public ResponseWrapper listRecordsByDTO(@RequestBody RecordQueryDTO recordQueryDTO){
         ResponseWrapper responseWrapper;

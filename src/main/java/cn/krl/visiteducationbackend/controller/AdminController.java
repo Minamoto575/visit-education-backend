@@ -2,9 +2,9 @@ package cn.krl.visiteducationbackend.controller;
 
 import cn.krl.visiteducationbackend.dto.AdminDTO;
 import cn.krl.visiteducationbackend.dto.LoginDTO;
+import cn.krl.visiteducationbackend.entity.Admin;
 import cn.krl.visiteducationbackend.response.ResponseWrapper;
 import cn.krl.visiteducationbackend.service.IAdminService;
-import cn.krl.visiteducationbackend.service.IRecordService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +16,8 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Api(tags = "管理者的api")
 @RequestMapping("/admin")
@@ -24,17 +26,15 @@ public class AdminController {
 
     @Autowired
     private IAdminService adminService;
-    @Autowired
-    private IRecordService recordService;
 
     /**
      * 管理员登录
      * @param
      * @return
      */
-    @GetMapping("/login")
+    @PostMapping("/login")
     @ApiOperation("管理员登录")
-    public ResponseWrapper adminLogin(@io.swagger.v3.oas.annotations.parameters.RequestBody LoginDTO loginDTO){
+    public ResponseWrapper adminLogin(@RequestBody LoginDTO loginDTO){
         ResponseWrapper responseWrapper;
 
         String name = loginDTO.getName();
@@ -64,15 +64,22 @@ public class AdminController {
     @ApiOperation("管理员注册")
     public ResponseWrapper register(@RequestBody AdminDTO adminDTO){
         ResponseWrapper responseWrapper;
-        try {
-            String name = adminDTO.getName();
-            String password = adminDTO.getPassword();
-            adminService.register(name,password);
-            responseWrapper=ResponseWrapper.markSuccess();
-        } catch (Exception e) {
-            e.printStackTrace();
-            responseWrapper=ResponseWrapper.markError();
+        List<Admin> admins = adminService.getByName(adminDTO.getName());
+        System.out.println(admins);
+        if(admins.isEmpty()){
+            try {
+                String name = adminDTO.getName();
+                String password = adminDTO.getPassword();
+                adminService.register(name,password);
+                responseWrapper=ResponseWrapper.markSuccess();
+            } catch (Exception e) {
+                e.printStackTrace();
+                responseWrapper=ResponseWrapper.markError();
+            }
+        }else {
+            responseWrapper=ResponseWrapper.markAdminExist();
         }
+
         return responseWrapper;
     }
 

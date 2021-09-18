@@ -2,14 +2,15 @@ package cn.krl.visiteducationbackend.response;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Data
+@ApiModel(value = "响应")
 @AllArgsConstructor
 public class ResponseWrapper {
 
@@ -122,6 +123,16 @@ public class ResponseWrapper {
         responseWrapper.setCode(ResponseCode.ACCOUNT_ERROR.getCode());
         responseWrapper.setMsg(ResponseCode.ACCOUNT_ERROR.getMsg());
         return responseWrapper;
+    }
+
+    /**
+     * 用户名已被使用
+     */
+    public static ResponseWrapper markAdminExist(){
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        responseWrapper.setCode(ResponseCode.ADMIN_EXIST.getCode());
+        responseWrapper.setMsg(ResponseCode.ADMIN_EXIST.getMsg());
+        return  responseWrapper;
     }
 
 

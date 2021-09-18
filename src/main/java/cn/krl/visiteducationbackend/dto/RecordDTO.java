@@ -1,13 +1,13 @@
 package cn.krl.visiteducationbackend.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Api("记录传输对象")
+@ApiModel(value = "记录传输对象")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

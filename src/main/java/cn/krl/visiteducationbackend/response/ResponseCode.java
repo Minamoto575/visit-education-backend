@@ -18,6 +18,7 @@ public enum  ResponseCode {
     API_NOT_EXISTS(404, "请求的接口不存在"),
     URL_ERROR(405, "无效的URL链接"),
     UNKNOWN_IP(406, "非法IP请求"),
+    ADMIN_EXIST(407,"该用户名已被使用"),
     SYSTEM_ERROR(500, "系统异常"),
     /**
      * 900以上，判定为前端同一处理的异常

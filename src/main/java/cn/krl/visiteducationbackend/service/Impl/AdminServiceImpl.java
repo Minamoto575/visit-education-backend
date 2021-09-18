@@ -9,6 +9,8 @@ import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AdminServiceImpl extends ServiceImpl<AdminMapper,Admin> implements IAdminService {
 
@@ -17,8 +19,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper,Admin> implements 
 
 
     @Override
-    public Admin getByName(String name) {
-        return adminMapper.getByName(name).get(0);
+    public List<Admin> getByName(String name) {
+        return adminMapper.getByName(name);
     }
 
     @Override

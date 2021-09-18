@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 
 
+//可信的数据源
 public class AdminRealm extends AuthorizingRealm {
 
     @Autowired
@@ -28,7 +29,7 @@ public class AdminRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         String principal = (String) authenticationToken.getPrincipal();
         //读取数据库中的Admin
-        Admin admin = adminService.getByName(principal);
+        Admin admin = adminService.getByName(principal).get(0);
         if (!ObjectUtils.isEmpty(admin)) {
             return new SimpleAuthenticationInfo(admin.getName(), admin.getPassword(), ByteSource.Util.bytes(admin.getSalt()), this.getName());
         }

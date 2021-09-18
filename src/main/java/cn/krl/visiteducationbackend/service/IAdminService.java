@@ -2,7 +2,8 @@ package cn.krl.visiteducationbackend.service;
 
 import cn.krl.visiteducationbackend.entity.Admin;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface IAdminService extends IService<Admin> {
     /**
@@ -10,7 +11,7 @@ public interface IAdminService extends IService<Admin> {
      * @param name 用户名
      * @return
      */
-    Admin getByName(String name);
+    List<Admin> getByName(String name);
 
     /**
      * 管理员注册

@@ -3,7 +3,7 @@ package cn.krl.visiteducationbackend.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 //@Entity
-@Api(value = "记录实体")
+@ApiModel(value = "记录实体")
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("record")
