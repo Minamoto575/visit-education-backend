@@ -44,6 +44,7 @@ public class AdminController {
         try {
             subject.login(new UsernamePasswordToken(name,password));
             responseWrapper=ResponseWrapper.markSuccess();
+            responseWrapper.setExtra("adminName",name);
         } catch (UnknownAccountException e) {
             e.printStackTrace();
             responseWrapper=ResponseWrapper.markAccountError();

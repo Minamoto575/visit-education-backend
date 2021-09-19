@@ -7,6 +7,7 @@ import cn.krl.visiteducationbackend.listener.RecordDTOListener;
 import cn.krl.visiteducationbackend.response.ResponseWrapper;
 import cn.krl.visiteducationbackend.service.IRecordService;
 import com.alibaba.excel.EasyExcel;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -103,6 +104,60 @@ public class RecordController {
         } catch (IOException e) {
             responseWrapper=ResponseWrapper.markError();
             e.printStackTrace();
+        }
+        return responseWrapper;
+    }
+
+    @GetMapping("/search/project")
+    @ApiOperation("获取所有项目的列表")
+    public ResponseWrapper listProject(){
+        ResponseWrapper responseWrapper;
+        try {
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.select("distinct projectName");
+            List<String> projects = recordService.listObjs(queryWrapper);
+            responseWrapper = ResponseWrapper.markSuccess();
+            responseWrapper.setExtra("projects",projects);
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseWrapper = ResponseWrapper.markError();
+        }
+        return  responseWrapper;
+    }
+
+    @GetMapping("/search/school/{project}")
+    @ApiOperation("根据项目获取学校列表")
+    public ResponseWrapper listSchoolByProject(@PathVariable String project){
+        ResponseWrapper responseWrapper;
+        try {
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.select("distinct schoolName");
+            queryWrapper.eq("projectName",project);
+            List<String> schools = recordService.listObjs(queryWrapper);
+            responseWrapper = ResponseWrapper.markSuccess();
+            responseWrapper.setExtra("schools",schools);
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseWrapper = ResponseWrapper.markError();
+        }
+        return responseWrapper;
+    }
+
+    @GetMapping("/search/subject/{project}&{school}")
+    @ApiOperation("根据项目与学校获取学科列表")
+    public ResponseWrapper listSchoolByProjectAndSchool(@PathVariable String project,@PathVariable String school){
+        ResponseWrapper responseWrapper;
+        try {
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.select("distinct subjectName");
+            queryWrapper.eq("projectName",project);
+            queryWrapper.eq("schoolName",school);
+            List<String> subjects = recordService.listObjs(queryWrapper);
+            responseWrapper = ResponseWrapper.markSuccess();
+            responseWrapper.setExtra("subjects",subjects);
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseWrapper = ResponseWrapper.markError();
         }
         return responseWrapper;
     }
