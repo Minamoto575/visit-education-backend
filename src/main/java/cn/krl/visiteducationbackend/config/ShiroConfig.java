@@ -34,10 +34,10 @@ public class ShiroConfig {
         //表示这个受限资源需要认证和授权
         map.put("/admin/logout","authc");
         map.put("/admin/register","authc");
-        map.put("/record/delete","authc");
+        map.put("/record/delete/","authc");
         map.put("/record/post","authc");
         map.put("/record/update","authc");
-        map.put("/record/upload","authc");
+        map.put("/record/upload/","authc");
 
         // 设置认证界面路径
         shiroFilterFactoryBean.setLoginUrl("/admin/login");

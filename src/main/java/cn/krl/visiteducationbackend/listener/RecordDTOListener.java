@@ -45,7 +45,7 @@ public class RecordDTOListener extends AnalysisEventListener<RecordDTO>{
         if (!recordService.exist(recordDTO)) {
             list.add(recordDTO);
         }
-        if(list.size()>BATCH_COUNT){
+        if(list.size()>=BATCH_COUNT){
             saveData();
             list.clear();
         }
