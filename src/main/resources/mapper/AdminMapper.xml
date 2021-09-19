@@ -11,7 +11,7 @@
         <result column="gmtCodified" property="gmtModified"></result>
     </resultMap>
 
-    <select id="getByName" resultMap="AdminMap">
-      select * from admin where #{name}=name
-    </select>
+    <!--<select id="getByName" resultMap="AdminMap">-->
+      <!--select * from admin where #{name}=name-->
+    <!--</select>-->
 </mapper>

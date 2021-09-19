@@ -29,7 +29,7 @@ public class AdminRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         String principal = (String) authenticationToken.getPrincipal();
         //读取数据库中的Admin
-        Admin admin = adminService.getByName(principal).get(0);
+        Admin admin = adminService.getByName(principal);
         if (!ObjectUtils.isEmpty(admin)) {
             return new SimpleAuthenticationInfo(admin.getName(), admin.getPassword(), ByteSource.Util.bytes(admin.getSalt()), this.getName());
         }

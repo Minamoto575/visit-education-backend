@@ -19,12 +19,15 @@ public interface IRecordService extends IService<Record> {
     List<Record> listRecordsByDTO(RecordQueryDTO recordQueryDTO);
 
 
+
     /**
      * 根据教师名称模糊查询
      * @param name
      * @return
      */
     List<Record> listRecordsByTeacherName(String name);
+
+
 
     /**
      * 查询 : 根据state状态查询Record列表，分页显示
@@ -34,6 +37,40 @@ public interface IRecordService extends IService<Record> {
      */
     IPage<Record> selectRecordPage(Page<Record> page, Integer state);
 
+
+
+    /**
+     * 检查数据库是否以及存在某条记录
+     * @param recordDTO record传输对象
+     * @return
+     */
     boolean exist(RecordDTO recordDTO);
+
+
+
+    /**
+     * 获取项目列表
+     * @return
+     */
+    List<String> listProjects();
+
+
+
+    /**
+     * 根据项目获取学校列表
+     * @param project   项目
+     * @return
+     */
+    List<String> listSchoolsByProject(String project);
+
+
+
+    /**
+     * 根据项目、学校获取学科列表
+     * @param project   项目
+     * @param school    学科
+     * @return
+     */
+    List<String> listSubjectByProjectAndSchool(String project,String school);
 
 }

@@ -2,7 +2,6 @@ package cn.krl.visiteducationbackend.controller;
 
 import cn.krl.visiteducationbackend.dto.AdminDTO;
 import cn.krl.visiteducationbackend.dto.LoginDTO;
-import cn.krl.visiteducationbackend.entity.Admin;
 import cn.krl.visiteducationbackend.response.ResponseWrapper;
 import cn.krl.visiteducationbackend.service.IAdminService;
 import io.swagger.annotations.Api;
@@ -16,8 +15,6 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @Api(tags = "管理者的api")
 @RequestMapping("/admin")
@@ -29,7 +26,7 @@ public class AdminController {
 
     /**
      * 管理员登录
-     * @param
+     * @param loginDTO 登录信息传输对象，包括用户名和密码
      * @return
      */
     @PostMapping("/login")
@@ -58,16 +55,14 @@ public class AdminController {
 
     /**
      * 管理员注册
-     * @param adminDTO
+     * @param adminDTO 登录注册传输对象，包括用户名和密码
      * @return
      */
     @PostMapping("/register")
     @ApiOperation("管理员注册")
     public ResponseWrapper register(@RequestBody AdminDTO adminDTO){
         ResponseWrapper responseWrapper;
-        List<Admin> admins = adminService.getByName(adminDTO.getName());
-        System.out.println(admins);
-        if(admins.isEmpty()){
+        if(!adminService.exist(adminDTO.getName())){
             try {
                 String name = adminDTO.getName();
                 String password = adminDTO.getPassword();
@@ -80,9 +75,9 @@ public class AdminController {
         }else {
             responseWrapper=ResponseWrapper.markAdminExist();
         }
-
         return responseWrapper;
     }
+
 
     /**
      * 账号退出
@@ -102,7 +97,6 @@ public class AdminController {
             responseWrapper=ResponseWrapper.markError();
         }
         return  responseWrapper;
-
     }
 
 

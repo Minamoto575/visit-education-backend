@@ -7,7 +7,6 @@ import cn.krl.visiteducationbackend.listener.RecordDTOListener;
 import cn.krl.visiteducationbackend.response.ResponseWrapper;
 import cn.krl.visiteducationbackend.service.IRecordService;
 import com.alibaba.excel.EasyExcel;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +30,7 @@ public class RecordController {
 
     /**
      * 删除一条记录
-     * @param id
+     * @param id    记录id
      * @return
      */
     @DeleteMapping("/delete/{id}")
@@ -46,6 +45,7 @@ public class RecordController {
         return responseWrapper;
     }
 
+
     /**
      * 更新一条记录
      * @param recordDTO 被更新的记录
@@ -58,6 +58,7 @@ public class RecordController {
         Record record = new Record();
         BeanUtils.copyProperties(recordDTO,record);
         record.setGmtModified(System.currentTimeMillis());
+
         if(recordService.updateById(record)){
             responseWrapper=ResponseWrapper.markSuccess();
         }else {
@@ -65,6 +66,7 @@ public class RecordController {
         }
         return responseWrapper;
     }
+
 
     /**
      * 增加一条记录
@@ -90,7 +92,7 @@ public class RecordController {
 
     /**
      * 通过Excel批量导入记录
-     * @param multipartFile
+     * @param multipartFile 输入的excel文件
      * @return
      * @throws IOException
      */
@@ -99,6 +101,7 @@ public class RecordController {
     public ResponseWrapper postByExcel(@RequestPart("file") MultipartFile multipartFile) throws IOException {
         ResponseWrapper responseWrapper;
         try {
+            //对excel进行读取，在listern.RecordDTOLister被监听
             EasyExcel.read(multipartFile.getInputStream(),RecordDTO.class,new RecordDTOListener(recordService)).sheet().doRead();
             responseWrapper=ResponseWrapper.markSuccess();
         } catch (IOException e) {
@@ -108,14 +111,17 @@ public class RecordController {
         return responseWrapper;
     }
 
+
+    /**
+     * 获取数据库中所有项目的列表
+     * @return
+     */
     @GetMapping("/search/project")
     @ApiOperation("获取所有项目的列表")
     public ResponseWrapper listProject(){
         ResponseWrapper responseWrapper;
         try {
-            QueryWrapper queryWrapper = new QueryWrapper();
-            queryWrapper.select("distinct projectName");
-            List<String> projects = recordService.listObjs(queryWrapper);
+            List<String> projects = recordService.listProjects();
             responseWrapper = ResponseWrapper.markSuccess();
             responseWrapper.setExtra("projects",projects);
         } catch (Exception e) {
@@ -125,15 +131,18 @@ public class RecordController {
         return  responseWrapper;
     }
 
+
+    /**
+     * 根据项目名称获取对应的学校列表
+     * @param project   项目名称
+     * @return
+     */
     @GetMapping("/search/school/{project}")
     @ApiOperation("根据项目获取学校列表")
     public ResponseWrapper listSchoolByProject(@PathVariable String project){
         ResponseWrapper responseWrapper;
         try {
-            QueryWrapper queryWrapper = new QueryWrapper();
-            queryWrapper.select("distinct schoolName");
-            queryWrapper.eq("projectName",project);
-            List<String> schools = recordService.listObjs(queryWrapper);
+            List<String> schools = recordService.listSchoolsByProject(project);
             responseWrapper = ResponseWrapper.markSuccess();
             responseWrapper.setExtra("schools",schools);
         } catch (Exception e) {
@@ -143,16 +152,19 @@ public class RecordController {
         return responseWrapper;
     }
 
+
+    /**
+     * 根据项目名称和学校名称获取对应的学科列表
+     * @param project   项目名称
+     * @param school    学科名称
+     * @return
+     */
     @GetMapping("/search/subject/{project}&{school}")
     @ApiOperation("根据项目与学校获取学科列表")
     public ResponseWrapper listSchoolByProjectAndSchool(@PathVariable String project,@PathVariable String school){
         ResponseWrapper responseWrapper;
         try {
-            QueryWrapper queryWrapper = new QueryWrapper();
-            queryWrapper.select("distinct subjectName");
-            queryWrapper.eq("projectName",project);
-            queryWrapper.eq("schoolName",school);
-            List<String> subjects = recordService.listObjs(queryWrapper);
+            List<String> subjects = recordService.listSubjectByProjectAndSchool(project,school);
             responseWrapper = ResponseWrapper.markSuccess();
             responseWrapper.setExtra("subjects",subjects);
         } catch (Exception e) {
@@ -161,6 +173,7 @@ public class RecordController {
         }
         return responseWrapper;
     }
+
 
     /**
      * 根据请求dto查询记录
@@ -173,7 +186,6 @@ public class RecordController {
         ResponseWrapper responseWrapper;
         try {
             List<Record> records = recordService.listRecordsByDTO(recordQueryDTO);
-            System.out.println(records);
             responseWrapper=ResponseWrapper.markSuccess();
             responseWrapper.setExtra("records",records);
         } catch (Exception e) {
@@ -182,6 +194,7 @@ public class RecordController {
         }
         return responseWrapper;
     }
+
 
     /**
      * 根据老师名称进行模糊查询

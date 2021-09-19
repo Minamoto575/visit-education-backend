@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Queue;
 
 @Service
 public class RecordServiceImpl extends ServiceImpl<RecordMapper,Record> implements IRecordService {
@@ -21,21 +22,27 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper,Record> implemen
     @Autowired
     private RecordMapper recordMapper;
 
+
     @Override
     public List<Record> listRecordsByDTO(RecordQueryDTO recordQueryDTO) {
-//        String project = recordQueryDTO.getProjectName();
-//        String school = recordQueryDTO.getSchoolName();
-//        String subject = recordQueryDTO.getSubjectName();
-        List<Record> records=recordMapper.listRecordsByQueryDTO(recordQueryDTO);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("projectName",recordQueryDTO.getProjectName());
+        queryWrapper.eq("schoolName",recordQueryDTO.getSchoolName());
+        queryWrapper.eq("subjectName",recordQueryDTO.getSubjectName());
+        List<Record> records=recordMapper.selectList(queryWrapper);
         return records;
     }
+
 
     @Override
     public List<Record> listRecordsByTeacherName(String name) {
         //模糊查询
-        List<Record> records = recordMapper.selectList(new QueryWrapper<Record>().like("teacherName",name));
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.like("teacherName",name);
+        List<Record> records = recordMapper.selectList(queryWrapper);
         return records;
     }
+
 
     @Override
     public IPage<Record> selectRecordPage(Page<Record> page, Integer state) {
@@ -46,11 +53,50 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper,Record> implemen
         return recordMapper.selectPageVo(page,state);
     }
 
+
     @Override
     public boolean exist(RecordDTO recordDTO) {
-        if(recordMapper.listTheSame(recordDTO).isEmpty()){
+
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("projectName",recordDTO.getProjectName());
+        queryWrapper.eq("schoolName",recordDTO.getSchoolName());
+        queryWrapper.eq("subjectName",recordDTO.getSubjectName());
+        queryWrapper.eq("taskName",recordDTO.getTaskName());
+        queryWrapper.eq("subjectCode",recordDTO.getSubjectCode());
+        queryWrapper.eq("teacherName",recordDTO.getTeacherName());
+
+        List<Record> records = recordMapper.selectList(queryWrapper);
+
+        if(records.isEmpty()){
             return false;
         }
         return true;
+    }
+
+
+    @Override
+    public List<String> listProjects() {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.select("distinct projectName");
+        return recordMapper.selectObjs(queryWrapper);
+    }
+
+
+    @Override
+    public List<String> listSchoolsByProject(String project) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.select("distinct schoolName");
+        queryWrapper.eq("projectName",project);
+        return recordMapper.selectObjs(queryWrapper);
+    }
+
+
+    @Override
+    public List<String> listSubjectByProjectAndSchool(String project, String school) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.select("distinct subjectName");
+        queryWrapper.eq("projectName",project);
+        queryWrapper.eq("schoolName",school);
+        return recordMapper.selectObjs(queryWrapper);
     }
 }

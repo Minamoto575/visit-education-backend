@@ -14,17 +14,17 @@
         <result column="gmtModified" property="gmtModified"></result>
     </resultMap>
 
-    <select id="listTheSame" resultMap="RecordMap">
-      select * from record
-      where #{recordDTO.schoolName}=schoolName and #{recordDTO.subjectName}=subjectName
-      and #{recordDTO.subjectCode}=subjectCode and #{recordDTO.projectName}=projectName
-      and #{recordDTO.teacherName}=teacherName and #{recordDTO.taskName}=taskName
-    </select>
+    <!--<select id="listTheSame" resultMap="RecordMap">-->
+      <!--select * from record-->
+      <!--where #{recordDTO.schoolName}=schoolName and #{recordDTO.subjectName}=subjectName-->
+      <!--and #{recordDTO.subjectCode}=subjectCode and #{recordDTO.projectName}=projectName-->
+      <!--and #{recordDTO.teacherName}=teacherName and #{recordDTO.taskName}=taskName-->
+    <!--</select>-->
 
-    <select id="listRecordsByQueryDTO" resultMap="RecordMap">
-      select * from record
-      where #{recordQueryDTO.schoolName}=schoolName and #{recordQueryDTO.subjectName}=subjectName
-      and #{recordQueryDTO.projectName}=projectName
-    </select>
+    <!--<select id="listRecordsByQueryDTO" resultMap="RecordMap">-->
+      <!--select * from record-->
+      <!--where #{recordQueryDTO.schoolName}=schoolName and #{recordQueryDTO.subjectName}=subjectName-->
+      <!--and #{recordQueryDTO.projectName}=projectName-->
+    <!--</select>-->
 
 </mapper>
