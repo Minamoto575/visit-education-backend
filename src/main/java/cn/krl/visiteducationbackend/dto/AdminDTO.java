@@ -6,13 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "管理员传输对象")
-public class AdminDTO {
+public class AdminDTO implements Serializable {
     @NotNull
     @ApiModelProperty(name = "id",value = "管理员id",dataType = "Integer")
     private Integer id;

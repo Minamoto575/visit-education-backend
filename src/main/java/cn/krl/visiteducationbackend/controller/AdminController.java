@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin
 @Api(tags = "管理者的api")
 @RequestMapping("/admin")
 @Slf4j
@@ -31,6 +32,7 @@ public class AdminController {
      */
     @PostMapping("/login")
     @ApiOperation("管理员登录")
+    @ResponseBody
     public ResponseWrapper adminLogin(@RequestBody LoginDTO loginDTO){
         ResponseWrapper responseWrapper;
 

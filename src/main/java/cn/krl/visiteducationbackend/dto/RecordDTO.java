@@ -7,11 +7,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @ApiModel(value = "记录传输对象")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecordDTO {
+public class RecordDTO implements Serializable {
 
     @ApiModelProperty(name = "id",value = "id",dataType = "Integer")
     private Integer id;
