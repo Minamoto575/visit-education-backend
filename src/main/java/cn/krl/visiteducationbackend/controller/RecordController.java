@@ -1,7 +1,8 @@
 package cn.krl.visiteducationbackend.controller;
 
 import cn.krl.visiteducationbackend.dto.RecordDTO;
-import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
+import cn.krl.visiteducationbackend.dto.CombinationQueryDTO;
+import cn.krl.visiteducationbackend.dto.TeacherQueryDTO;
 import cn.krl.visiteducationbackend.entity.Record;
 import cn.krl.visiteducationbackend.listener.RecordDTOListener;
 import cn.krl.visiteducationbackend.response.ResponseWrapper;
@@ -125,6 +126,7 @@ public class RecordController {
             List<String> projects = recordService.listProjects();
             responseWrapper = ResponseWrapper.markSuccess();
             responseWrapper.setExtra("projects",projects);
+            responseWrapper.setExtra("total",projects.size());
         } catch (Exception e) {
             e.printStackTrace();
             responseWrapper = ResponseWrapper.markError();
@@ -146,6 +148,7 @@ public class RecordController {
             List<String> schools = recordService.listSchoolsByProject(project);
             responseWrapper = ResponseWrapper.markSuccess();
             responseWrapper.setExtra("schools",schools);
+            responseWrapper.setExtra("total",schools.size());
         } catch (Exception e) {
             e.printStackTrace();
             responseWrapper = ResponseWrapper.markError();
@@ -168,6 +171,7 @@ public class RecordController {
             List<String> subjects = recordService.listSubjectByProjectAndSchool(project,school);
             responseWrapper = ResponseWrapper.markSuccess();
             responseWrapper.setExtra("subjects",subjects);
+            responseWrapper.setExtra("total",subjects.size());
         } catch (Exception e) {
             e.printStackTrace();
             responseWrapper = ResponseWrapper.markError();
@@ -177,18 +181,19 @@ public class RecordController {
 
 
     /**
-     * 根据请求dto查询记录
-     * @param recordQueryDTO 请求dto 包含项目、学校、学科名称
+     * 根据请求dto组合查询记录
+     * @param queryDTO 请求dto 包含页码、页数、项目、学校、学科名称
      * @return
      */
     @PostMapping("/search/combination")
     @ApiOperation("根据项目、学校、学科名称查询")
-    public ResponseWrapper listRecordsByDTO(@RequestBody RecordQueryDTO recordQueryDTO){
+    public ResponseWrapper listRecordsByDTO(@RequestBody CombinationQueryDTO queryDTO){
         ResponseWrapper responseWrapper;
         try {
-            List<Record> records = recordService.listRecordsByDTO(recordQueryDTO);
+            List<Record> records = recordService.listRecordsByCombination(queryDTO);
             responseWrapper=ResponseWrapper.markSuccess();
             responseWrapper.setExtra("records",records);
+            responseWrapper.setExtra("total",records.size());
         } catch (Exception e) {
             e.printStackTrace();
             responseWrapper=ResponseWrapper.markError();
@@ -199,22 +204,44 @@ public class RecordController {
 
     /**
      * 根据老师名称进行模糊查询
-     * @param name 老师的模糊名字
+     * @param queryDTO 老师的模糊名字
      * @return
      */
-    @GetMapping("/search/{name}")
+    @PostMapping("/search/teacher")
     @ApiOperation("根据老师名称模糊查询")
-    public ResponseWrapper listRecordsByTeacherName(@PathVariable String name){
+    public ResponseWrapper listRecordsByTeacherName(@RequestBody TeacherQueryDTO queryDTO){
         ResponseWrapper responseWrapper;
         try {
-            List<Record> records= recordService.listRecordsByTeacherName(name);
+            List<Record> records= recordService.listRecordsByTeacher(queryDTO);
             responseWrapper=ResponseWrapper.markSuccess();
             responseWrapper.setExtra("records",records);
+            responseWrapper.setExtra("total",records.size());
         } catch (Exception e) {
             e.printStackTrace();
             responseWrapper=ResponseWrapper.markError();
         }
         return responseWrapper;
     }
+
+    /**
+     * 获取所有记录
+     * @return
+     */
+    @GetMapping("/search/all")
+    @ApiOperation("获取所有记录")
+    public ResponseWrapper listRecordsByTeacherName(){
+        ResponseWrapper responseWrapper;
+        try {
+            List<Record> records= recordService.list();
+            responseWrapper=ResponseWrapper.markSuccess();
+            responseWrapper.setExtra("records",records);
+            responseWrapper.setExtra("total",records.size());
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseWrapper=ResponseWrapper.markError();
+        }
+        return responseWrapper;
+    }
+
 
 }
