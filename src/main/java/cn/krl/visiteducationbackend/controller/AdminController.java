@@ -1,9 +1,11 @@
 package cn.krl.visiteducationbackend.controller;
 
+import cn.krl.visiteducationbackend.annotation.PassToken;
 import cn.krl.visiteducationbackend.dto.AdminDTO;
 import cn.krl.visiteducationbackend.dto.LoginDTO;
 import cn.krl.visiteducationbackend.response.ResponseWrapper;
 import cn.krl.visiteducationbackend.service.IAdminService;
+import cn.krl.visiteducationbackend.utils.JwtUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -33,17 +35,22 @@ public class AdminController {
     @PostMapping("/login")
     @ApiOperation("管理员登录")
     @ResponseBody
+    @PassToken
     public ResponseWrapper adminLogin(@RequestBody LoginDTO loginDTO){
         ResponseWrapper responseWrapper;
 
         String name = loginDTO.getName();
         String password = loginDTO.getPassword();
+        int id =adminService.getByName(name).getId();
         Subject subject = SecurityUtils.getSubject();
 
         try {
             subject.login(new UsernamePasswordToken(name,password));
+            String token = JwtUtil.createToken(Integer.toString(id),name);
             responseWrapper=ResponseWrapper.markSuccess();
+            responseWrapper.setExtra("id",id);
             responseWrapper.setExtra("adminName",name);
+            responseWrapper.setExtra("token",token);
         } catch (UnknownAccountException e) {
             e.printStackTrace();
             responseWrapper=ResponseWrapper.markAccountError();
