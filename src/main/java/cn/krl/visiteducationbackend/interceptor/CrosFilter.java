@@ -24,7 +24,8 @@ public class CrosFilter implements Filter {
 
         //OPTIONS请求直接放行
         if ("OPTIONS".equals(request.getMethod())) {
-            response.setStatus(HttpStatus.NO_CONTENT.value());
+            //response.setStatus(HttpStatus.NO_CONTENT.value());
+            response.setStatus(HttpStatus.OK.value());
             return;
         } else {
             filterChain.doFilter(request, response);

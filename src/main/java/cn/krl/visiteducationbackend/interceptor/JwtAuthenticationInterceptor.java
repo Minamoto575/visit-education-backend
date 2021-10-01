@@ -26,7 +26,7 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
         }
 
         // 从请求头中取出 token  这里需要和前端约定好把jwt放到请求头一个叫token的地方
-        String token = httpServletRequest.getHeader("token");
+         String token = httpServletRequest.getHeader("token");
         // 如果不是映射到方法直接通过
         if (!(object instanceof HandlerMethod)) {
             return true;
