@@ -26,10 +26,6 @@ public class ShiroConfig {
         //表示这个为公共资源 一定是在受限资源上面
         map.put("/admin/login","anon");
         map.put("/record/search","anon");
-        //map.put("/admin/logout","anon");
-        //map.put("/admin/register","anon");
-        //map.put("record/delete","anon");
-
 
         //表示这个受限资源需要认证和授权
         map.put("/admin/logout","authc");

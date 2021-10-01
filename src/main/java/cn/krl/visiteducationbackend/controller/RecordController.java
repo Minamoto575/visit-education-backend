@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@CrossOrigin
 @Api(tags = "记录的api")
 @RequestMapping("/record")
 @Slf4j
