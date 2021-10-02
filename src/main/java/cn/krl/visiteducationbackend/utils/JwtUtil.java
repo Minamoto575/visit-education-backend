@@ -1,7 +1,5 @@
 package cn.krl.visiteducationbackend.utils;
 
-
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -11,7 +9,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import java.util.Calendar;
 import java.util.Date;
-
 
 public class JwtUtil {
     private static String secret = "ILOVEWHU";
@@ -24,7 +21,7 @@ public class JwtUtil {
      */
     public static String createToken(String id,String name) {
         Calendar nowTime = Calendar.getInstance();
-        nowTime.add(Calendar.MINUTE,30);
+        nowTime.add(Calendar.MINUTE,1440);
         Date expiresDate = nowTime.getTime();
 
         return JWT.create()

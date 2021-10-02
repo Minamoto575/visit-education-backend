@@ -34,7 +34,7 @@ public class AdminController {
     @PostMapping("/login")
     @ApiOperation("管理员登录")
     @ResponseBody
-    @PassToken
+    @PassToken  //不验证token
     public ResponseWrapper adminLogin(@RequestBody LoginDTO loginDTO){
         ResponseWrapper responseWrapper;
 
@@ -68,7 +68,7 @@ public class AdminController {
      */
     @PostMapping("/register")
     @ApiOperation("管理员注册")
-    public ResponseWrapper register(@RequestBody AdminDTO adminDTO){
+    public ResponseWrapper register(@RequestBody AdminDTO adminDTO,@RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         if(!adminService.exist(adminDTO.getName())){
             try {
@@ -93,7 +93,7 @@ public class AdminController {
      */
     @GetMapping("/logout")
     @ApiOperation("管理员退出")
-    public  ResponseWrapper logout(){
+    public  ResponseWrapper logout(@RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         Subject subject = null;
         try {

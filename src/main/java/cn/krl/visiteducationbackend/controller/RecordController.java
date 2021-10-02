@@ -1,7 +1,7 @@
 package cn.krl.visiteducationbackend.controller;
 
-import cn.krl.visiteducationbackend.dto.RecordDTO;
 import cn.krl.visiteducationbackend.dto.CombinationQueryDTO;
+import cn.krl.visiteducationbackend.dto.RecordDTO;
 import cn.krl.visiteducationbackend.dto.TeacherQueryDTO;
 import cn.krl.visiteducationbackend.entity.Record;
 import cn.krl.visiteducationbackend.listener.RecordDTOListener;
@@ -20,6 +20,9 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * 记录控制器，token的产生与验证由jwt控制，放在参数中是为了用swagger测试，控制器中不对token做校验
+ */
 @RestController
 @Api(tags = "记录的api")
 @RequestMapping("/record")
@@ -31,12 +34,13 @@ public class RecordController {
 
     /**
      * 删除一条记录
-     * @param id    记录id
+     * @param id    删除的id
+     * @param token
      * @return
      */
     @DeleteMapping("/delete/{id}")
     @ApiOperation("删除一条记录")
-    public ResponseWrapper delete(@RequestParam Integer id){
+    public ResponseWrapper delete(@RequestParam Integer id,@RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         if(recordService.removeById(id)){
             responseWrapper=ResponseWrapper.markSuccess();
@@ -49,12 +53,13 @@ public class RecordController {
 
     /**
      * 更新一条记录
-     * @param recordDTO 被更新的记录
+     * @param recordDTO 记录传输对象
+     * @param token
      * @return
      */
     @PutMapping("/update")
     @ApiOperation("更新一条记录")
-    public ResponseWrapper update(@RequestBody @Valid RecordDTO recordDTO){
+    public ResponseWrapper update(@RequestBody @Valid RecordDTO recordDTO,@RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         Record record = new Record();
         BeanUtils.copyProperties(recordDTO,record);
@@ -72,11 +77,12 @@ public class RecordController {
     /**
      * 增加一条记录
      * @param recordDTO 被增加的记录
+     * @param token
      * @return
      */
     @PostMapping("/post")
     @ApiOperation("增加一条记录")
-    public ResponseWrapper post(@RequestBody @Valid RecordDTO recordDTO){
+    public ResponseWrapper post(@RequestBody @Valid RecordDTO recordDTO,@RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         if(recordService.exist(recordDTO)){
             responseWrapper=ResponseWrapper.markDataExisted();
@@ -94,12 +100,12 @@ public class RecordController {
     /**
      * 通过Excel批量导入记录
      * @param multipartFile 输入的excel文件
+     * @param token
      * @return
-     * @throws IOException
      */
     @PostMapping("/upload/excel")
     @ApiOperation("excel批量导入记录")
-    public ResponseWrapper postByExcel(@RequestPart("file") MultipartFile multipartFile) throws IOException {
+    public ResponseWrapper postByExcel(@RequestPart("file") MultipartFile multipartFile,@RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         try {
             //对excel进行读取，在listern.RecordDTOLister被监听
@@ -115,11 +121,12 @@ public class RecordController {
 
     /**
      * 获取数据库中所有项目的列表
+     * @param token
      * @return
      */
     @GetMapping("/search/project")
     @ApiOperation("获取所有项目的列表")
-    public ResponseWrapper listProject(){
+    public ResponseWrapper listProject(@RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         try {
             List<String> projects = recordService.listProjects();
@@ -135,13 +142,15 @@ public class RecordController {
 
 
     /**
-     * 根据项目名称获取对应的学校列表
-     * @param project   项目名称
+     * 根据项目名称获取对应的学校列表  GET方法URL中文会乱码，这里使用POST
+     * @param combinationQueryDTO
+     * @param token
      * @return
      */
-    @GetMapping("/search/school/{project}")
+    @PostMapping(value = "/search/school")
     @ApiOperation("根据项目获取学校列表")
-    public ResponseWrapper listSchoolByProject(@PathVariable String project){
+    public ResponseWrapper listSchoolByProject(@RequestBody CombinationQueryDTO combinationQueryDTO,@RequestHeader("token")String token){
+        String project = combinationQueryDTO.getProjectName();
         ResponseWrapper responseWrapper;
         try {
             List<String> schools = recordService.listSchoolsByProject(project);
@@ -157,14 +166,17 @@ public class RecordController {
 
 
     /**
-     * 根据项目名称和学校名称获取对应的学科列表
-     * @param project   项目名称
-     * @param school    学科名称
+     * 根据项目名称和学校名称获取对应的学科列表  GET方法URL中文会乱码，这里使用POST
+     * @param combinationQueryDTO   组合查询传输对象
+     * @param token
      * @return
      */
-    @GetMapping("/search/subject/{project}&{school}")
+    @PostMapping("/search/subject")
     @ApiOperation("根据项目与学校获取学科列表")
-    public ResponseWrapper listSchoolByProjectAndSchool(@PathVariable String project,@PathVariable String school){
+    public ResponseWrapper listSchoolByProjectAndSchool(@RequestBody CombinationQueryDTO combinationQueryDTO,
+                                                        @RequestHeader("token")String token){
+        String project = combinationQueryDTO.getProjectName();
+        String school = combinationQueryDTO.getSchoolName();
         ResponseWrapper responseWrapper;
         try {
             List<String> subjects = recordService.listSubjectByProjectAndSchool(project,school);
@@ -182,11 +194,12 @@ public class RecordController {
     /**
      * 根据请求dto组合查询记录
      * @param queryDTO 请求dto 包含页码、页数、项目、学校、学科名称
+     * @param token
      * @return
      */
     @PostMapping("/search/combination")
     @ApiOperation("根据项目、学校、学科名称查询")
-    public ResponseWrapper listRecordsByDTO(@RequestBody CombinationQueryDTO queryDTO){
+    public ResponseWrapper listRecordsByDTO(@RequestBody CombinationQueryDTO queryDTO,@RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         try {
             List<Record> records = recordService.listRecordsByCombination(queryDTO);
@@ -204,11 +217,12 @@ public class RecordController {
     /**
      * 根据老师名称进行模糊查询
      * @param queryDTO 老师的模糊名字
+     * @param token
      * @return
      */
     @PostMapping("/search/teacher")
     @ApiOperation("根据老师名称模糊查询")
-    public ResponseWrapper listRecordsByTeacherName(@RequestBody TeacherQueryDTO queryDTO){
+    public ResponseWrapper listRecordsByTeacherName(@RequestBody TeacherQueryDTO queryDTO,@RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         try {
             List<Record> records= recordService.listRecordsByTeacher(queryDTO);
@@ -224,11 +238,12 @@ public class RecordController {
 
     /**
      * 获取所有记录
+     * @param token
      * @return
      */
     @GetMapping("/search/all")
     @ApiOperation("获取所有记录")
-    public ResponseWrapper listRecordsByTeacherName(){
+    public ResponseWrapper listRecordsByTeacherName(@RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         try {
             List<Record> records= recordService.list();
