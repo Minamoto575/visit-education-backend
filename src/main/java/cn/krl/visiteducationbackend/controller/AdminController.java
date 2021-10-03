@@ -64,6 +64,7 @@ public class AdminController {
     /**
      * 管理员注册
      * @param adminDTO 登录注册传输对象，包括用户名和密码
+     * @param token
      * @return
      */
     @PostMapping("/register")
@@ -89,6 +90,7 @@ public class AdminController {
 
     /**
      * 账号退出
+     * @param token
      * @return
      */
     @GetMapping("/logout")

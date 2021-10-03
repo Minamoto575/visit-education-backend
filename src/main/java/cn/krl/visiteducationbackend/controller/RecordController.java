@@ -38,7 +38,7 @@ public class RecordController {
      * @param token
      * @return
      */
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete")
     @ApiOperation("删除一条记录")
     public ResponseWrapper delete(@RequestParam Integer id,@RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
