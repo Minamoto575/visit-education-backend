@@ -135,6 +135,16 @@ public class ResponseWrapper {
         return  responseWrapper;
     }
 
+    /**
+     * 密码错误
+     * @return
+     */
+    public static ResponseWrapper markPasswordError(){
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        responseWrapper.setCode(ResponseCode.PASSWORD_ERROR.getCode());
+        responseWrapper.setMsg(ResponseCode.PASSWORD_ERROR.getMsg());
+        return responseWrapper;
+    }
 
     /**
      * 包装ResponseWrapper

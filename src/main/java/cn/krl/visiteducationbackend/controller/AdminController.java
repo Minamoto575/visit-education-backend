@@ -2,6 +2,7 @@ package cn.krl.visiteducationbackend.controller;
 
 import cn.krl.visiteducationbackend.annotation.PassToken;
 import cn.krl.visiteducationbackend.dto.AdminDTO;
+import cn.krl.visiteducationbackend.dto.ChangePasswrodDTO;
 import cn.krl.visiteducationbackend.dto.LoginDTO;
 import cn.krl.visiteducationbackend.response.ResponseWrapper;
 import cn.krl.visiteducationbackend.service.IAdminService;
@@ -48,7 +49,7 @@ public class AdminController {
             String token = JwtUtil.createToken(Integer.toString(id),name);
             responseWrapper=ResponseWrapper.markSuccess();
             responseWrapper.setExtra("id",id);
-            responseWrapper.setExtra("adminName",name);
+            responseWrapper.setExtra("name",name);
             responseWrapper.setExtra("token",token);
         } catch (UnknownAccountException e) {
             e.printStackTrace();
@@ -96,7 +97,7 @@ public class AdminController {
      */
     @GetMapping("/logout")
     @ApiOperation("管理员退出")
-    public  ResponseWrapper logout(@RequestHeader("token")String token){
+    public ResponseWrapper logout(@RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         Subject subject = null;
         try {
@@ -110,5 +111,31 @@ public class AdminController {
         return  responseWrapper;
     }
 
+    /**
+     * 修改密码
+     * @param changePasswrodDTO 修改密码传输对象
+     * @return
+     */
+    @PostMapping("/changePassword")
+    @ApiOperation("修改密码")
+    public ResponseWrapper changePassword(@RequestBody ChangePasswrodDTO changePasswrodDTO){
+
+        ResponseWrapper responseWrapper;
+        //验证密码不一致
+        if(!adminService.testPassword(changePasswrodDTO)){
+            responseWrapper=ResponseWrapper.markPasswordError();
+            return responseWrapper;
+        }
+
+        //旧密码正确
+        try {
+            adminService.changePassword(changePasswrodDTO);
+            responseWrapper=ResponseWrapper.markSuccess();
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseWrapper=ResponseWrapper.markError();
+        }
+        return responseWrapper;
+    }
 
 }

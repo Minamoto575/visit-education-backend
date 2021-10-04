@@ -1,5 +1,6 @@
 package cn.krl.visiteducationbackend.service;
 
+import cn.krl.visiteducationbackend.dto.ChangePasswrodDTO;
 import cn.krl.visiteducationbackend.entity.Admin;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -31,4 +32,22 @@ public interface IAdminService extends IService<Admin> {
      * @return
      */
     Admin getByName(String name);
+
+
+
+    /**
+     * 校验密码是否正确
+     * @param changePasswrodDTO
+     * @return
+     */
+    boolean testPassword(ChangePasswrodDTO changePasswrodDTO);
+
+
+
+    /**
+     * 修改密码
+     * @param changePasswrodDTO
+     * @return
+     */
+    boolean changePassword(ChangePasswrodDTO changePasswrodDTO);
 }

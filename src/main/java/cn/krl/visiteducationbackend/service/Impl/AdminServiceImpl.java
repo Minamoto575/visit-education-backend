@@ -1,5 +1,7 @@
 package cn.krl.visiteducationbackend.service.Impl;
 
+import cn.krl.visiteducationbackend.dto.ChangePasswrodDTO;
+import cn.krl.visiteducationbackend.dto.LoginDTO;
 import cn.krl.visiteducationbackend.entity.Admin;
 import cn.krl.visiteducationbackend.mapper.AdminMapper;
 import cn.krl.visiteducationbackend.service.IAdminService;
@@ -52,5 +54,48 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper,Admin> implements 
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("name",name);
         return adminMapper.selectOne(queryWrapper);
+    }
+
+
+    @Override
+    public boolean testPassword(ChangePasswrodDTO changePasswrodDTO) {
+
+        //数据库存储的密码（经过salt hash散列）
+        int id = changePasswrodDTO.getId();
+        Admin admin = adminMapper.selectById(id);
+        String password1 = admin.getPassword();
+
+        //前端发送的密码
+        String oldPassword = changePasswrodDTO.getOldPassword();
+        String salt = admin.getSalt();
+        Md5Hash md5Hash = new Md5Hash(oldPassword,salt,1024);
+        String password2 = md5Hash.toHex();
+        System.out.println(password1);
+        System.out.println(password2);
+        System.out.println(password1.equals(password2));
+        return password1.equals(password2);
+
+    }
+
+
+    @Override
+    public boolean changePassword(ChangePasswrodDTO changePasswrodDTO) {
+        try {
+            //获取需要更改的admin
+            int id = changePasswrodDTO.getId();
+            Admin admin = adminMapper.selectById(id);
+
+            //更新密码、修改时间
+            String salt = admin.getSalt();
+            String newPassword = changePasswrodDTO.getNewPassword();
+            Md5Hash md5Hash =new Md5Hash(newPassword,salt,1024);
+            admin.setPassword(md5Hash.toHex());
+            admin.setGmtModified(System.currentTimeMillis());
+            adminMapper.updateById(admin);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
