@@ -69,7 +69,8 @@ public class AdminController {
      */
     @PostMapping("/register")
     @ApiOperation("管理员注册")
-    public ResponseWrapper register(@RequestBody AdminDTO adminDTO,@RequestHeader("token")String token){
+    public ResponseWrapper register(@RequestBody AdminDTO adminDTO,
+                                    @RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         if(!adminService.exist(adminDTO.getName())){
             try {

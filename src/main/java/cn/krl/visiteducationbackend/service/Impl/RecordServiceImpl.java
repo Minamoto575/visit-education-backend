@@ -9,6 +9,7 @@ import cn.krl.visiteducationbackend.service.IRecordService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -93,4 +94,17 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper,Record> implemen
         queryWrapper.eq("schoolName",school);
         return recordMapper.selectObjs(queryWrapper);
     }
+
+    @Override
+    public int saveAndReturnId(RecordDTO recordDTO) {
+        Record record = new Record();
+        BeanUtils.copyProperties(recordDTO,record);
+        record.setGmtModified(System.currentTimeMillis());
+        record.setGmtCreate(System.currentTimeMillis());
+        recordMapper.insert(record);
+        System.out.println(record.getId());
+        return record.getId();
+    }
+
+
 }

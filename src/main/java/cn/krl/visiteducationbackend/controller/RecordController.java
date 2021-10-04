@@ -59,7 +59,8 @@ public class RecordController {
      */
     @PutMapping("/update")
     @ApiOperation("更新一条记录")
-    public ResponseWrapper update(@RequestBody @Valid RecordDTO recordDTO,@RequestHeader("token")String token){
+    public ResponseWrapper update(@RequestBody @Valid RecordDTO recordDTO,
+                                  @RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         Record record = new Record();
         BeanUtils.copyProperties(recordDTO,record);
@@ -82,17 +83,15 @@ public class RecordController {
      */
     @PostMapping("/post")
     @ApiOperation("增加一条记录")
-    public ResponseWrapper post(@RequestBody @Valid RecordDTO recordDTO,@RequestHeader("token")String token){
+    public ResponseWrapper post(@RequestBody @Valid RecordDTO recordDTO,
+                                @RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         if(recordService.exist(recordDTO)){
             responseWrapper=ResponseWrapper.markDataExisted();
         }else {
-            Record record = new Record();
-            BeanUtils.copyProperties(recordDTO,record);
-            record.setGmtModified(System.currentTimeMillis());
-            record.setGmtCreate(System.currentTimeMillis());
-            recordService.save(record);
+            int id=recordService.saveAndReturnId(recordDTO);
             responseWrapper=ResponseWrapper.markSuccess();
+            responseWrapper.setExtra("id",id);
     }
         return responseWrapper;
     }
@@ -105,7 +104,8 @@ public class RecordController {
      */
     @PostMapping("/upload/excel")
     @ApiOperation("excel批量导入记录")
-    public ResponseWrapper postByExcel(@RequestPart("file") MultipartFile multipartFile,@RequestHeader("token")String token){
+    public ResponseWrapper postByExcel(@RequestPart("file") MultipartFile multipartFile,
+                                       @RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         try {
             //对excel进行读取，在listern.RecordDTOLister被监听
@@ -149,7 +149,8 @@ public class RecordController {
      */
     @PostMapping(value = "/search/school")
     @ApiOperation("根据项目获取学校列表")
-    public ResponseWrapper listSchoolByProject(@RequestBody CombinationQueryDTO combinationQueryDTO,@RequestHeader("token")String token){
+    public ResponseWrapper listSchoolByProject(@RequestBody CombinationQueryDTO combinationQueryDTO,
+                                               @RequestHeader("token")String token){
         String project = combinationQueryDTO.getProjectName();
         ResponseWrapper responseWrapper;
         try {
@@ -199,7 +200,8 @@ public class RecordController {
      */
     @PostMapping("/search/combination")
     @ApiOperation("根据项目、学校、学科名称查询")
-    public ResponseWrapper listRecordsByDTO(@RequestBody CombinationQueryDTO queryDTO,@RequestHeader("token")String token){
+    public ResponseWrapper listRecordsByDTO(@RequestBody CombinationQueryDTO queryDTO,
+                                            @RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         try {
             List<Record> records = recordService.listRecordsByCombination(queryDTO);
@@ -222,7 +224,8 @@ public class RecordController {
      */
     @PostMapping("/search/teacher")
     @ApiOperation("根据老师名称模糊查询")
-    public ResponseWrapper listRecordsByTeacherName(@RequestBody TeacherQueryDTO queryDTO,@RequestHeader("token")String token){
+    public ResponseWrapper listRecordsByTeacherName(@RequestBody TeacherQueryDTO queryDTO,
+                                                    @RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         try {
             List<Record> records= recordService.listRecordsByTeacher(queryDTO);

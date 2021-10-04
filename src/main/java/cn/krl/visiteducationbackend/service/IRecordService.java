@@ -62,4 +62,13 @@ public interface IRecordService extends IService<Record> {
      */
     List<String> listSubjectByProjectAndSchool(String project,String school);
 
+
+
+    /**
+     * 保存到数据库并返回自增的主键id
+     * @param recordDTO
+     * @return
+     */
+    int saveAndReturnId(RecordDTO recordDTO);
+
 }
