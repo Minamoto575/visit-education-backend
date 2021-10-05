@@ -11,22 +11,34 @@ import java.util.List;
 public interface IRecordService extends IService<Record> {
 
     /**
-     * 组合查询
+     * 组合查询(分页查询)
      * @param queryDTO
      * @return
      */
     List<Record> listRecordsByCombination(CombinationQueryDTO queryDTO);
 
+    /**
+     * 符合组合查询的记录数
+     * @param queryDTO
+     * @return
+     */
+    int countByCombination(CombinationQueryDTO queryDTO);
+
 
 
     /**
-     * 根据教师名称模糊查询
+     * 根据教师名称模糊查询(分页查询)
      * @param queryDTO
      * @return
      */
     List<Record> listRecordsByTeacher(TeacherQueryDTO queryDTO);
 
-
+    /**
+     * 符合教师查询的记录数
+     * @param queryDTO
+     * @return
+     */
+    int countByTeacher(TeacherQueryDTO queryDTO);
 
     /**
      * 检查数据库是否以及存在某条记录
@@ -70,5 +82,6 @@ public interface IRecordService extends IService<Record> {
      * @return
      */
     int saveAndReturnId(RecordDTO recordDTO);
+
 
 }

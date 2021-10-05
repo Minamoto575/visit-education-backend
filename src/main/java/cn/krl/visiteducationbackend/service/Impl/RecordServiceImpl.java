@@ -35,6 +35,15 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper,Record> implemen
         return records;
     }
 
+    @Override
+    public int countByCombination(CombinationQueryDTO recordQueryDTO) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("projectName",recordQueryDTO.getProjectName());
+        queryWrapper.eq("schoolName",recordQueryDTO.getSchoolName());
+        queryWrapper.eq("subjectName",recordQueryDTO.getSubjectName());
+        return recordMapper.selectList(queryWrapper).size();
+    }
+
 
     @Override
     public List<Record> listRecordsByTeacher(TeacherQueryDTO queryDTO) {
@@ -46,6 +55,13 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper,Record> implemen
         page.setSize(queryDTO.getLimit());
         List<Record> records = recordMapper.selectPage(page,queryWrapper).getRecords();
         return records;
+    }
+
+    @Override
+    public int countByTeacher(TeacherQueryDTO queryDTO) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.like("teacherName",queryDTO.getTeacherName());
+        return recordMapper.selectList(queryWrapper).size();
     }
 
 

@@ -205,9 +205,10 @@ public class RecordController {
         ResponseWrapper responseWrapper;
         try {
             List<Record> records = recordService.listRecordsByCombination(queryDTO);
+            int total = recordService.countByCombination(queryDTO);
             responseWrapper=ResponseWrapper.markSuccess();
             responseWrapper.setExtra("records",records);
-            responseWrapper.setExtra("total",records.size());
+            responseWrapper.setExtra("total",total);
         } catch (Exception e) {
             e.printStackTrace();
             responseWrapper=ResponseWrapper.markError();
@@ -229,9 +230,10 @@ public class RecordController {
         ResponseWrapper responseWrapper;
         try {
             List<Record> records= recordService.listRecordsByTeacher(queryDTO);
+            int total = recordService.countByTeacher(queryDTO);
             responseWrapper=ResponseWrapper.markSuccess();
             responseWrapper.setExtra("records",records);
-            responseWrapper.setExtra("total",records.size());
+            responseWrapper.setExtra("total",total);
         } catch (Exception e) {
             e.printStackTrace();
             responseWrapper=ResponseWrapper.markError();
