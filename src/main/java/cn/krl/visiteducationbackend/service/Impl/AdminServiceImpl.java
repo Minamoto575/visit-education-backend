@@ -38,6 +38,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper,Admin> implements 
             admin.setName(name);
             admin.setPassword(md5Hash.toHex());
             admin.setSalt(salt);
+            admin.setType("common");
             admin.setGmtModified(System.currentTimeMillis());
             admin.setGmtCreate(System.currentTimeMillis());
             adminMapper.insert(admin);

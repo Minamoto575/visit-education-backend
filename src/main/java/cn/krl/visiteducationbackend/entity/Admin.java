@@ -21,6 +21,9 @@ public class Admin {
     @ApiModelProperty(name = "id",value = "管理员id",dataType = "Integer")
     private Integer id;
 
+    @ApiModelProperty(name="type",value = "管理员类型 super为超级管理员、common为普通",dataType = "String")
+    private String type;
+
     @ApiModelProperty(name="name",value = "管理员名称",dataType = "String")
     private String name;
 

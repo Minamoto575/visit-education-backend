@@ -3,6 +3,11 @@ package cn.krl.visiteducationbackend.utils;
 import java.util.Random;
 
 public class SaltUtil {
+    /**
+     * 生成长度为n的随机字符串
+     * @param n 长度n
+     * @return
+     */
     public static String getSalt(int n) {
         char[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890!@#$%^&*()".toCharArray();
         StringBuilder sb = new StringBuilder();
@@ -13,7 +18,4 @@ public class SaltUtil {
         return sb.toString();
     }
 
-    public static void main(String[] args) {
-        System.out.println(getSalt(4));
-    }
 }

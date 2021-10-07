@@ -19,7 +19,7 @@ public class JwtUtil {
      * @param name  用户名
      * @return
      */
-    public static String createToken(String id,String name) {
+    public static String createToken(String id,String name,String type) {
         Calendar nowTime = Calendar.getInstance();
         nowTime.add(Calendar.MINUTE,1440);
         Date expiresDate = nowTime.getTime();
@@ -31,8 +31,9 @@ public class JwtUtil {
             .withIssuedAt(new Date())
             //有效时间
             .withExpiresAt(expiresDate)
-            //载荷，随便写几个都可以
+            //载荷，管理员姓名和类型
             .withClaim("name", name)
+            .withClaim("type",type)
             //加密  id+String为密钥
             .sign(Algorithm.HMAC256(secret));
     }

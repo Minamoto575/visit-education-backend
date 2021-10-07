@@ -18,6 +18,7 @@ public class ResponseWrapper {
     private String msg;
     private Map<String, Object> extra;
 
+
     /**
      * 私有的构造函数
      */

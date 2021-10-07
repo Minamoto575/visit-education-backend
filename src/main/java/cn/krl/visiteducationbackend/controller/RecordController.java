@@ -1,5 +1,6 @@
 package cn.krl.visiteducationbackend.controller;
 
+import cn.krl.visiteducationbackend.annotation.PassToken;
 import cn.krl.visiteducationbackend.dto.CombinationQueryDTO;
 import cn.krl.visiteducationbackend.dto.RecordDTO;
 import cn.krl.visiteducationbackend.dto.TeacherQueryDTO;
@@ -121,12 +122,12 @@ public class RecordController {
 
     /**
      * 获取数据库中所有项目的列表
-     * @param token
      * @return
      */
     @GetMapping("/search/project")
     @ApiOperation("获取所有项目的列表")
-    public ResponseWrapper listProject(@RequestHeader("token")String token){
+    @PassToken
+    public ResponseWrapper listProject(){
         ResponseWrapper responseWrapper;
         try {
             List<String> projects = recordService.listProjects();
@@ -144,13 +145,12 @@ public class RecordController {
     /**
      * 根据项目名称获取对应的学校列表  GET方法URL中文会乱码，这里使用POST
      * @param combinationQueryDTO
-     * @param token
      * @return
      */
     @PostMapping(value = "/search/school")
     @ApiOperation("根据项目获取学校列表")
-    public ResponseWrapper listSchoolByProject(@RequestBody CombinationQueryDTO combinationQueryDTO,
-                                               @RequestHeader("token")String token){
+    @PassToken
+    public ResponseWrapper listSchoolByProject(@RequestBody CombinationQueryDTO combinationQueryDTO){
         String project = combinationQueryDTO.getProjectName();
         ResponseWrapper responseWrapper;
         try {
@@ -169,13 +169,12 @@ public class RecordController {
     /**
      * 根据项目名称和学校名称获取对应的学科列表  GET方法URL中文会乱码，这里使用POST
      * @param combinationQueryDTO   组合查询传输对象
-     * @param token
      * @return
      */
     @PostMapping("/search/subject")
     @ApiOperation("根据项目与学校获取学科列表")
-    public ResponseWrapper listSchoolByProjectAndSchool(@RequestBody CombinationQueryDTO combinationQueryDTO,
-                                                        @RequestHeader("token")String token){
+    @PassToken
+    public ResponseWrapper listSchoolByProjectAndSchool(@RequestBody CombinationQueryDTO combinationQueryDTO){
         String project = combinationQueryDTO.getProjectName();
         String school = combinationQueryDTO.getSchoolName();
         ResponseWrapper responseWrapper;
@@ -195,13 +194,12 @@ public class RecordController {
     /**
      * 根据请求dto组合查询记录
      * @param queryDTO 请求dto 包含页码、页数、项目、学校、学科名称
-     * @param token
      * @return
      */
     @PostMapping("/search/combination")
     @ApiOperation("根据项目、学校、学科名称查询")
-    public ResponseWrapper listRecordsByDTO(@RequestBody CombinationQueryDTO queryDTO,
-                                            @RequestHeader("token")String token){
+    @PassToken
+    public ResponseWrapper listRecordsByDTO(@RequestBody CombinationQueryDTO queryDTO){
         ResponseWrapper responseWrapper;
         try {
             List<Record> records = recordService.listRecordsByCombination(queryDTO);
@@ -220,13 +218,12 @@ public class RecordController {
     /**
      * 根据老师名称进行模糊查询
      * @param queryDTO 老师的模糊名字
-     * @param token
      * @return
      */
     @PostMapping("/search/teacher")
     @ApiOperation("根据老师名称模糊查询")
-    public ResponseWrapper listRecordsByTeacherName(@RequestBody TeacherQueryDTO queryDTO,
-                                                    @RequestHeader("token")String token){
+    @PassToken
+    public ResponseWrapper listRecordsByTeacherName(@RequestBody TeacherQueryDTO queryDTO){
         ResponseWrapper responseWrapper;
         try {
             List<Record> records= recordService.listRecordsByTeacher(queryDTO);
