@@ -19,6 +19,8 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Api(tags = "管理者的api")
 @RequestMapping("/admin")
@@ -79,7 +81,8 @@ public class AdminController {
                                     @RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         //int id = Integer.parseInt(JwtUtil.getAudience(token));
-        String type = JwtUtil.getClaimByName(token,"type").toString();
+        String type = JwtUtil.getClaimByName(token,"type").asString();
+        System.out.println(type);
 
         //超级管理员才有权限
         if(!SUPER.equals(type)){
@@ -198,5 +201,41 @@ public class AdminController {
         return responseWrapper;
     }
 
+    /**
+     * 获取所有管理员列表(不包含salt和password)
+     * @return
+     */
+    @GetMapping("/listall")
+    @ApiOperation("列出所有管理员")
+    public ResponseWrapper listall(){
+        ResponseWrapper responseWrapper;
+        try {
+            List<Admin> admins = adminService.listall();
+            responseWrapper=ResponseWrapper.markSuccess();
+            responseWrapper.setExtra("admins",admins);
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseWrapper=ResponseWrapper.markError();
+        }
+        return responseWrapper;
+    }
+
+
+    /**
+     * 测试管理员用户名是否被使用过
+     * @param name 用户名
+     * @return
+     */
+    @GetMapping("/testName")
+    @ApiOperation("测试管理员用户名是否被使用过")
+    public ResponseWrapper testName(@RequestParam String name){
+        ResponseWrapper responseWrapper;
+        if(adminService.exist(name)){
+            responseWrapper=ResponseWrapper.markDefault(200,"used");
+        }else{
+            responseWrapper=ResponseWrapper.markDefault(200,"notused");
+        }
+        return responseWrapper;
+    }
 
 }

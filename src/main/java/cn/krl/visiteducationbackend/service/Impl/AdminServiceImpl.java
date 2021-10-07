@@ -99,4 +99,11 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper,Admin> implements 
             return false;
         }
     }
+
+    @Override
+    public List<Admin> listall() {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.select("id","name","type","gmtModified","gmtCreate");
+        return adminMapper.selectList(queryWrapper);
+    }
 }

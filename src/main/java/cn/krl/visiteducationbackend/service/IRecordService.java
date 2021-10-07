@@ -3,6 +3,7 @@ package cn.krl.visiteducationbackend.service;
 import cn.krl.visiteducationbackend.dto.RecordDTO;
 import cn.krl.visiteducationbackend.dto.CombinationQueryDTO;
 import cn.krl.visiteducationbackend.dto.TeacherQueryDTO;
+import cn.krl.visiteducationbackend.entity.Admin;
 import cn.krl.visiteducationbackend.entity.Record;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -82,6 +83,7 @@ public interface IRecordService extends IService<Record> {
      * @return
      */
     int saveAndReturnId(RecordDTO recordDTO);
+
 
 
 }

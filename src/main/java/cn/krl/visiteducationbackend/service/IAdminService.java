@@ -4,6 +4,8 @@ import cn.krl.visiteducationbackend.dto.ChangePasswrodDTO;
 import cn.krl.visiteducationbackend.entity.Admin;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 public interface IAdminService extends IService<Admin> {
 
 
@@ -50,4 +52,11 @@ public interface IAdminService extends IService<Admin> {
      * @return
      */
     boolean changePassword(ChangePasswrodDTO changePasswrodDTO);
+
+
+    /**
+     * 列出所有管理员（不包含密码和salt）
+     * @return
+     */
+    List<Admin> listall();
 }
