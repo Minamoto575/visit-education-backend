@@ -1,9 +1,7 @@
 package cn.krl.visiteducationbackend.service;
 
+import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
 import cn.krl.visiteducationbackend.dto.RecordDTO;
-import cn.krl.visiteducationbackend.dto.CombinationQueryDTO;
-import cn.krl.visiteducationbackend.dto.TeacherQueryDTO;
-import cn.krl.visiteducationbackend.entity.Admin;
 import cn.krl.visiteducationbackend.entity.Record;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -16,14 +14,14 @@ public interface IRecordService extends IService<Record> {
      * @param queryDTO
      * @return
      */
-    List<Record> listRecordsByCombination(CombinationQueryDTO queryDTO);
+    List<Record> listRecordsByCombination(RecordQueryDTO queryDTO);
 
     /**
      * 符合组合查询的记录数
      * @param queryDTO
      * @return
      */
-    int countByCombination(CombinationQueryDTO queryDTO);
+    int countByCombination(RecordQueryDTO queryDTO);
 
 
 
@@ -32,14 +30,29 @@ public interface IRecordService extends IService<Record> {
      * @param queryDTO
      * @return
      */
-    List<Record> listRecordsByTeacher(TeacherQueryDTO queryDTO);
+    List<Record> listRecordsByTeacher(RecordQueryDTO queryDTO);
+
 
     /**
      * 符合教师查询的记录数
      * @param queryDTO
      * @return
      */
-    int countByTeacher(TeacherQueryDTO queryDTO);
+    int countByTeacher(RecordQueryDTO queryDTO);
+
+
+    /**
+     * 列出所有记录(分页查询)
+     * @return
+     */
+    List<Record> listAll(RecordQueryDTO queryDTO);
+
+
+    /**
+     * 计算所有记录数
+     * @return
+     */
+    int countAll();
 
     /**
      * 检查数据库是否以及存在某条记录

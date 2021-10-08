@@ -1,5 +1,6 @@
 package cn.krl.visiteducationbackend.service;
 
+import cn.krl.visiteducationbackend.dto.AdminQueryDTO;
 import cn.krl.visiteducationbackend.dto.ChangePasswrodDTO;
 import cn.krl.visiteducationbackend.entity.Admin;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -58,5 +59,19 @@ public interface IAdminService extends IService<Admin> {
      * 列出所有管理员（不包含密码和salt）
      * @return
      */
-    List<Admin> listall();
+    List<Admin> listAll(AdminQueryDTO queryDTO);
+
+    /**
+     * 列出所有管理员数量
+     * @return
+     */
+    int countAll();
+
+
+    /**
+     * 是否是超级用户
+     * @param id
+     * @return
+     */
+    boolean isSuper(int id);
 }

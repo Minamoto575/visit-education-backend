@@ -2,8 +2,8 @@ package cn.krl.visiteducationbackend.controller;
 
 import cn.krl.visiteducationbackend.annotation.PassToken;
 import cn.krl.visiteducationbackend.dto.AdminDTO;
+import cn.krl.visiteducationbackend.dto.AdminQueryDTO;
 import cn.krl.visiteducationbackend.dto.ChangePasswrodDTO;
-import cn.krl.visiteducationbackend.dto.LoginDTO;
 import cn.krl.visiteducationbackend.entity.Admin;
 import cn.krl.visiteducationbackend.response.ResponseWrapper;
 import cn.krl.visiteducationbackend.service.IAdminService;
@@ -35,18 +35,18 @@ public class AdminController {
 
     /**
      * 管理员登录
-     * @param loginDTO 登录信息传输对象，包括用户名和密码
+     * @param adminDTO 管理员传输对象，包括用户名和密码
      * @return
      */
     @PostMapping("/login")
     @ApiOperation("管理员登录")
     @ResponseBody
     @PassToken
-    public ResponseWrapper adminLogin(@RequestBody LoginDTO loginDTO){
+    public ResponseWrapper adminLogin(@RequestBody AdminDTO adminDTO){
         ResponseWrapper responseWrapper;
 
-        String name = loginDTO.getName();
-        String password = loginDTO.getPassword();
+        String name = adminDTO.getName();
+        String password = adminDTO.getPassword();
         Admin admin = adminService.getByName(name);
         Subject subject = SecurityUtils.getSubject();
 
@@ -144,12 +144,19 @@ public class AdminController {
 
         ResponseWrapper responseWrapper;
         int id = Integer.parseInt(JwtUtil.getAudience(token));
-        String type = JwtUtil.getClaimByName(token,"type").toString();
+        String type = JwtUtil.getClaimByName(token,"type").asString();
 
-        //普通管理员 密码验证正确且修改自己的密码
-        boolean isOK = adminService.testPassword(changePasswrodDTO)&&(id==changePasswrodDTO.getId());
-        //超级管理员直接修改
-        if(SUPER.equals(type)||isOK){
+        int targetId = changePasswrodDTO.getId();
+
+        boolean isOK;
+        if(SUPER.equals(type)){
+            //超级管理员 不更改其他超级管理员密码
+            isOK = !adminService.isSuper(targetId)||(id==targetId);
+        }else{
+            //普通管理员 密码验证正确  且修改自己的密码
+            isOK = adminService.testPassword(changePasswrodDTO)&&(id==targetId);
+        }
+        if(isOK){
             try{
                 adminService.changePassword(changePasswrodDTO);
                 responseWrapper = ResponseWrapper.markSuccess();
@@ -177,13 +184,13 @@ public class AdminController {
         ResponseWrapper responseWrapper;
         int id = Integer.parseInt(JwtUtil.getAudience(token));
 
-        //不能删除自己
-        if(id==deleteId){
+        //不能删除自己  超级管理员不能删除
+        if(id==deleteId||adminService.isSuper(deleteId)){
             responseWrapper = ResponseWrapper.markApiNotPermission();
             return responseWrapper;
         }
 
-        String type = JwtUtil.getClaimByName(token,"type").toString();
+        String type = JwtUtil.getClaimByName(token,"type").asString();
         //超级管理员才有权限
         if(!SUPER.equals(type)){
             responseWrapper = ResponseWrapper.markApiNotPermission();
@@ -205,14 +212,15 @@ public class AdminController {
      * 获取所有管理员列表(不包含salt和password)
      * @return
      */
-    @GetMapping("/listall")
+    @PostMapping("/search/all")
     @ApiOperation("列出所有管理员")
-    public ResponseWrapper listall(){
+    public ResponseWrapper listAll(@RequestBody AdminQueryDTO queryDTO){
         ResponseWrapper responseWrapper;
         try {
-            List<Admin> admins = adminService.listall();
+            List<Admin> admins = adminService.listAll(queryDTO);
             responseWrapper=ResponseWrapper.markSuccess();
             responseWrapper.setExtra("admins",admins);
+            responseWrapper.setExtra("total",adminService.countAll());
         } catch (Exception e) {
             e.printStackTrace();
             responseWrapper=ResponseWrapper.markError();

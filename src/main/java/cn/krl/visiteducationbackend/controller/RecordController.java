@@ -1,9 +1,8 @@
 package cn.krl.visiteducationbackend.controller;
 
 import cn.krl.visiteducationbackend.annotation.PassToken;
-import cn.krl.visiteducationbackend.dto.CombinationQueryDTO;
+import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
 import cn.krl.visiteducationbackend.dto.RecordDTO;
-import cn.krl.visiteducationbackend.dto.TeacherQueryDTO;
 import cn.krl.visiteducationbackend.entity.Record;
 import cn.krl.visiteducationbackend.listener.RecordDTOListener;
 import cn.krl.visiteducationbackend.response.ResponseWrapper;
@@ -144,14 +143,14 @@ public class RecordController {
 
     /**
      * 根据项目名称获取对应的学校列表  GET方法URL中文会乱码，这里使用POST
-     * @param combinationQueryDTO
+     * @param queryDTO
      * @return
      */
     @PostMapping(value = "/search/school")
     @ApiOperation("根据项目获取学校列表")
     @PassToken
-    public ResponseWrapper listSchoolByProject(@RequestBody CombinationQueryDTO combinationQueryDTO){
-        String project = combinationQueryDTO.getProjectName();
+    public ResponseWrapper listSchoolByProject(@RequestBody RecordQueryDTO queryDTO){
+        String project = queryDTO.getProjectName();
         ResponseWrapper responseWrapper;
         try {
             List<String> schools = recordService.listSchoolsByProject(project);
@@ -168,15 +167,15 @@ public class RecordController {
 
     /**
      * 根据项目名称和学校名称获取对应的学科列表  GET方法URL中文会乱码，这里使用POST
-     * @param combinationQueryDTO   组合查询传输对象
+     * @param queryDTO
      * @return
      */
     @PostMapping("/search/subject")
     @ApiOperation("根据项目与学校获取学科列表")
     @PassToken
-    public ResponseWrapper listSchoolByProjectAndSchool(@RequestBody CombinationQueryDTO combinationQueryDTO){
-        String project = combinationQueryDTO.getProjectName();
-        String school = combinationQueryDTO.getSchoolName();
+    public ResponseWrapper listSchoolByProjectAndSchool(@RequestBody RecordQueryDTO queryDTO){
+        String project = queryDTO.getProjectName();
+        String school = queryDTO.getSchoolName();
         ResponseWrapper responseWrapper;
         try {
             List<String> subjects = recordService.listSubjectByProjectAndSchool(project,school);
@@ -197,9 +196,9 @@ public class RecordController {
      * @return
      */
     @PostMapping("/search/combination")
-    @ApiOperation("根据项目、学校、学科名称查询")
+    @ApiOperation("根据项目、学校、学科名称组合查询")
     @PassToken
-    public ResponseWrapper listRecordsByDTO(@RequestBody CombinationQueryDTO queryDTO){
+    public ResponseWrapper listRecordsByCombination(@RequestBody RecordQueryDTO queryDTO){
         ResponseWrapper responseWrapper;
         try {
             List<Record> records = recordService.listRecordsByCombination(queryDTO);
@@ -223,7 +222,7 @@ public class RecordController {
     @PostMapping("/search/teacher")
     @ApiOperation("根据老师名称模糊查询")
     @PassToken
-    public ResponseWrapper listRecordsByTeacherName(@RequestBody TeacherQueryDTO queryDTO){
+    public ResponseWrapper listRecordsByTeacherName(@RequestBody RecordQueryDTO queryDTO){
         ResponseWrapper responseWrapper;
         try {
             List<Record> records= recordService.listRecordsByTeacher(queryDTO);
@@ -243,15 +242,15 @@ public class RecordController {
      * @param token
      * @return
      */
-    @GetMapping("/search/all")
+    @PostMapping("/search/all")
     @ApiOperation("获取所有记录")
-    public ResponseWrapper listRecordsByTeacherName(@RequestHeader("token")String token){
+    public ResponseWrapper listAll(@RequestBody RecordQueryDTO queryDTO, @RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         try {
-            List<Record> records= recordService.list();
+            List<Record> records= recordService.listAll(queryDTO);
             responseWrapper=ResponseWrapper.markSuccess();
             responseWrapper.setExtra("records",records);
-            responseWrapper.setExtra("total",records.size());
+            responseWrapper.setExtra("total",recordService.countAll());
         } catch (Exception e) {
             e.printStackTrace();
             responseWrapper=ResponseWrapper.markError();

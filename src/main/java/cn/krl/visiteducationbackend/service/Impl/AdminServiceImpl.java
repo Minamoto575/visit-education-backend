@@ -1,12 +1,13 @@
 package cn.krl.visiteducationbackend.service.Impl;
 
+import cn.krl.visiteducationbackend.dto.AdminQueryDTO;
 import cn.krl.visiteducationbackend.dto.ChangePasswrodDTO;
-import cn.krl.visiteducationbackend.dto.LoginDTO;
 import cn.krl.visiteducationbackend.entity.Admin;
 import cn.krl.visiteducationbackend.mapper.AdminMapper;
 import cn.krl.visiteducationbackend.service.IAdminService;
 import cn.krl.visiteducationbackend.utils.SaltUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,9 +102,24 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper,Admin> implements 
     }
 
     @Override
-    public List<Admin> listall() {
+    public List<Admin> listAll(AdminQueryDTO queryDTO) {
         QueryWrapper queryWrapper = new QueryWrapper();
+        Page page = new Page();
+        page.setSize(queryDTO.getLimit());
+        page.setCurrent(queryDTO.getPage());
         queryWrapper.select("id","name","type","gmtModified","gmtCreate");
-        return adminMapper.selectList(queryWrapper);
+        return adminMapper.selectPage(page,queryWrapper).getRecords();
+    }
+
+    @Override
+    public int countAll() {
+        long count = adminMapper.selectCount(new QueryWrapper<>());
+        return (int)count;
+    }
+
+    @Override
+    public boolean isSuper(int id) {
+        Admin admin = adminMapper.selectById(id);
+        return "super".equals(admin.getType());
     }
 }

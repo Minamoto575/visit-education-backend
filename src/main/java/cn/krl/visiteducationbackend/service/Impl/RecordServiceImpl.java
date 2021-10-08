@@ -1,8 +1,7 @@
 package cn.krl.visiteducationbackend.service.Impl;
 
+import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
 import cn.krl.visiteducationbackend.dto.RecordDTO;
-import cn.krl.visiteducationbackend.dto.CombinationQueryDTO;
-import cn.krl.visiteducationbackend.dto.TeacherQueryDTO;
 import cn.krl.visiteducationbackend.entity.Record;
 import cn.krl.visiteducationbackend.mapper.RecordMapper;
 import cn.krl.visiteducationbackend.service.IRecordService;
@@ -23,7 +22,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper,Record> implemen
 
 
     @Override
-    public List<Record> listRecordsByCombination(CombinationQueryDTO recordQueryDTO) {
+    public List<Record> listRecordsByCombination(RecordQueryDTO recordQueryDTO) {
         QueryWrapper queryWrapper = new QueryWrapper();
         Page page  = new Page();
         queryWrapper.eq("projectName",recordQueryDTO.getProjectName());
@@ -36,7 +35,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper,Record> implemen
     }
 
     @Override
-    public int countByCombination(CombinationQueryDTO recordQueryDTO) {
+    public int countByCombination(RecordQueryDTO recordQueryDTO) {
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("projectName",recordQueryDTO.getProjectName());
         queryWrapper.eq("schoolName",recordQueryDTO.getSchoolName());
@@ -46,7 +45,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper,Record> implemen
 
 
     @Override
-    public List<Record> listRecordsByTeacher(TeacherQueryDTO queryDTO) {
+    public List<Record> listRecordsByTeacher(RecordQueryDTO queryDTO) {
         //模糊查询
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.like("teacherName",queryDTO.getTeacherName());
@@ -58,10 +57,26 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper,Record> implemen
     }
 
     @Override
-    public int countByTeacher(TeacherQueryDTO queryDTO) {
+    public int countByTeacher(RecordQueryDTO queryDTO) {
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.like("teacherName",queryDTO.getTeacherName());
         return recordMapper.selectList(queryWrapper).size();
+    }
+
+    @Override
+    public List<Record> listAll(RecordQueryDTO queryDTO) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        Page page = new Page();
+        page.setCurrent(queryDTO.getPage());
+        page.setSize(queryDTO.getLimit());
+        List<Record> records = recordMapper.selectPage(page,queryWrapper).getRecords();
+        return records;
+    }
+
+    @Override
+    public int countAll() {
+        long count = recordMapper.selectCount(new QueryWrapper());
+        return (int)count;
     }
 
 
