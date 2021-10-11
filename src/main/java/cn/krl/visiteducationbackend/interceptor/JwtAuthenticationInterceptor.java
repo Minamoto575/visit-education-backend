@@ -42,22 +42,17 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
         }
         //默认全部检查
         else {
-            System.out.println("被jwt拦截需要验证");
             // 执行认证
             if (token == null) {
                 //这里其实是登录失效,没token了
                 System.out.println("需要登录");
             }
-
             // 获取 token 中的 user Name
             String id = JwtUtil.getAudience(token);
-
             Admin admin = adminService.getById(id);
-
             if (admin == null) {
                 System.out.println("用户不存在");
             }
-
             // 验证 token
             JwtUtil.verifyToken(token);
             return true;
