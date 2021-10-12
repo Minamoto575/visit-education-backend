@@ -65,7 +65,6 @@ public class RecordController {
         Record record = new Record();
         BeanUtils.copyProperties(recordDTO,record);
         record.setGmtModified(System.currentTimeMillis());
-
         if(recordService.updateById(record)){
             responseWrapper=ResponseWrapper.markSuccess();
         }else {
