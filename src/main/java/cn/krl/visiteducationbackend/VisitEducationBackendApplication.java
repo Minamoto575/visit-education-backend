@@ -8,21 +8,11 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @SpringBootApplication
 @CrossOrigin
 @MapperScan("cn.krl.visiteducationbackend.mapper")
-public class SystemBackendApplication {
+
+public class VisitEducationBackendApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SystemBackendApplication.class, args);
+        SpringApplication.run(VisitEducationBackendApplication.class, args);
     }
-
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//
-//        registry.addMapping("/**")
-//            .allowCredentials(true)
-//            .allowedHeaders("*")
-//            .allowedOrigins("*")
-//            .allowedMethods("*");
-//    }
-
 
 }

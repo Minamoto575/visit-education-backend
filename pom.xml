@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>cn.krl</groupId>
-    <artifactId>system-backed</artifactId>
+    <artifactId>visit-education-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>system-backed</name>
-    <description>国内访问学者查询系统</description>
+    <name>visit-education-backend</name>
+    <description>国内访问学者查询系统后端</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>
@@ -120,6 +120,11 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

@@ -1,4 +1,4 @@
-package cn.krl.visiteducationbackend.utils;
+package cn.krl.visiteducationbackend.common.utils;
 
 import java.util.Random;
 

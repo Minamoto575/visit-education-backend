@@ -1,4 +1,4 @@
-package cn.krl.visiteducationbackend.response;
+package cn.krl.visiteducationbackend.common.response;
 
 public enum  ResponseCode {
     /**

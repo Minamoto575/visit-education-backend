@@ -1,13 +1,14 @@
 package cn.krl.visiteducationbackend.controller;
 
-import cn.krl.visiteducationbackend.annotation.PassToken;
+import cn.krl.visiteducationbackend.common.annotation.PassToken;
 import cn.krl.visiteducationbackend.dto.AdminDTO;
 import cn.krl.visiteducationbackend.dto.AdminQueryDTO;
 import cn.krl.visiteducationbackend.dto.ChangePasswrodDTO;
 import cn.krl.visiteducationbackend.entity.Admin;
-import cn.krl.visiteducationbackend.response.ResponseWrapper;
+import cn.krl.visiteducationbackend.common.enums.AdminType;
+import cn.krl.visiteducationbackend.common.response.ResponseWrapper;
 import cn.krl.visiteducationbackend.service.IAdminService;
-import cn.krl.visiteducationbackend.utils.JwtUtil;
+import cn.krl.visiteducationbackend.common.utils.JwtUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,6 @@ import java.util.List;
 @RequestMapping("/admin")
 @Slf4j
 public class AdminController {
-
-    private final String SUPER = "super";
-    private final String COMMON = "common";
 
     @Autowired
     private IAdminService adminService;
@@ -85,7 +83,7 @@ public class AdminController {
         System.out.println(type);
 
         //超级管理员才有权限
-        if(!SUPER.equals(type)){
+        if(!AdminType.SUPER_ADMIN.getType().equals(type)){
             responseWrapper = ResponseWrapper.markApiNotPermission();
             return responseWrapper;
         }
@@ -149,7 +147,7 @@ public class AdminController {
         int targetId = changePasswrodDTO.getId();
 
         boolean isOK;
-        if(SUPER.equals(type)){
+        if(AdminType.SUPER_ADMIN.getType().equals(type)){
             //超级管理员 不更改其他超级管理员密码
             isOK = !adminService.isSuper(targetId)||(id==targetId);
         }else{
@@ -192,7 +190,7 @@ public class AdminController {
 
         String type = JwtUtil.getClaimByName(token,"type").asString();
         //超级管理员才有权限
-        if(!SUPER.equals(type)){
+        if(!AdminType.SUPER_ADMIN.getType().equals(type)){
             responseWrapper = ResponseWrapper.markApiNotPermission();
             return responseWrapper;
         }

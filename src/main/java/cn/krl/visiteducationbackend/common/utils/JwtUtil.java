@@ -1,4 +1,4 @@
-package cn.krl.visiteducationbackend.utils;
+package cn.krl.visiteducationbackend.common.utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

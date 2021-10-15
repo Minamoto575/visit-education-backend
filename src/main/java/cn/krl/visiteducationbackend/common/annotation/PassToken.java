@@ -1,4 +1,4 @@
-package cn.krl.visiteducationbackend.annotation;
+package cn.krl.visiteducationbackend.common.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

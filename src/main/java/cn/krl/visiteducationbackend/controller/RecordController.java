@@ -1,11 +1,11 @@
 package cn.krl.visiteducationbackend.controller;
 
-import cn.krl.visiteducationbackend.annotation.PassToken;
+import cn.krl.visiteducationbackend.common.annotation.PassToken;
 import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
 import cn.krl.visiteducationbackend.dto.RecordDTO;
 import cn.krl.visiteducationbackend.entity.Record;
-import cn.krl.visiteducationbackend.listener.RecordDTOListener;
-import cn.krl.visiteducationbackend.response.ResponseWrapper;
+import cn.krl.visiteducationbackend.common.listener.RecordDTOListener;
+import cn.krl.visiteducationbackend.common.response.ResponseWrapper;
 import cn.krl.visiteducationbackend.service.IRecordService;
 import com.alibaba.excel.EasyExcel;
 import io.swagger.annotations.Api;

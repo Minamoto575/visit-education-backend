@@ -1,4 +1,4 @@
-package cn.krl.visiteducationbackend.response;
+package cn.krl.visiteducationbackend.common.response;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;

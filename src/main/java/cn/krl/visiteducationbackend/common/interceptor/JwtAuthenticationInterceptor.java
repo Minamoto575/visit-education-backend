@@ -1,9 +1,9 @@
-package cn.krl.visiteducationbackend.interceptor;
+package cn.krl.visiteducationbackend.common.interceptor;
 
-import cn.krl.visiteducationbackend.annotation.PassToken;
+import cn.krl.visiteducationbackend.common.annotation.PassToken;
 import cn.krl.visiteducationbackend.entity.Admin;
 import cn.krl.visiteducationbackend.service.IAdminService;
-import cn.krl.visiteducationbackend.utils.JwtUtil;
+import cn.krl.visiteducationbackend.common.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;

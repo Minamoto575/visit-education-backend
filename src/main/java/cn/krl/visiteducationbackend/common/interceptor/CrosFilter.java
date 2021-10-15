@@ -1,4 +1,4 @@
-package cn.krl.visiteducationbackend.interceptor;
+package cn.krl.visiteducationbackend.common.interceptor;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

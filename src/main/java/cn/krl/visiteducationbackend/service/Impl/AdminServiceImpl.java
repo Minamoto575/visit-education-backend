@@ -3,9 +3,10 @@ package cn.krl.visiteducationbackend.service.Impl;
 import cn.krl.visiteducationbackend.dto.AdminQueryDTO;
 import cn.krl.visiteducationbackend.dto.ChangePasswrodDTO;
 import cn.krl.visiteducationbackend.entity.Admin;
+import cn.krl.visiteducationbackend.common.enums.AdminType;
 import cn.krl.visiteducationbackend.mapper.AdminMapper;
 import cn.krl.visiteducationbackend.service.IAdminService;
-import cn.krl.visiteducationbackend.utils.SaltUtil;
+import cn.krl.visiteducationbackend.common.utils.SaltUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -120,6 +121,6 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper,Admin> implements 
     @Override
     public boolean isSuper(int id) {
         Admin admin = adminMapper.selectById(id);
-        return "super".equals(admin.getType());
+        return AdminType.SUPER_ADMIN.getType().equals(admin.getType());
     }
 }

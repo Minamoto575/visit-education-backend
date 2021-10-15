@@ -1,4 +1,4 @@
-package cn.krl.visiteducationbackend.listener;
+package cn.krl.visiteducationbackend.common.listener;
 
 
 import cn.krl.visiteducationbackend.dto.RecordDTO;
