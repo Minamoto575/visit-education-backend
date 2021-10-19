@@ -16,8 +16,12 @@ import java.util.List;
 //不能被spring管理,读取excel则触发
 public class RecordDTOListener extends AnalysisEventListener<RecordDTO>{
 
-    //每2000条存储数据库，然后清空list
-    private static final int BATCH_COUNT=2000;
+
+    /**
+     * 每100条存储数据库，然后清空list
+     * 服务器内存小  BATCH_COUNT不能过大
+     */
+    private static final int BATCH_COUNT=100;
     List<RecordDTO>  list= new ArrayList<RecordDTO>();
 
     private IRecordService recordService;
@@ -68,6 +72,7 @@ public class RecordDTOListener extends AnalysisEventListener<RecordDTO>{
         for(RecordDTO r:list){
             Record record = new Record();
             BeanUtils.copyProperties(r,record);
+            record.setId(null);
             record.setGmtCreate(System.currentTimeMillis());
             record.setGmtModified(System.currentTimeMillis());
             records.add(record);

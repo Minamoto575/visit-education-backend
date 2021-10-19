@@ -1,13 +1,14 @@
 package cn.krl.visiteducationbackend.controller;
 
 import cn.krl.visiteducationbackend.common.annotation.PassToken;
-import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
-import cn.krl.visiteducationbackend.dto.RecordDTO;
-import cn.krl.visiteducationbackend.entity.Record;
 import cn.krl.visiteducationbackend.common.listener.RecordDTOListener;
 import cn.krl.visiteducationbackend.common.response.ResponseWrapper;
+import cn.krl.visiteducationbackend.dto.RecordDTO;
+import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
+import cn.krl.visiteducationbackend.entity.Record;
 import cn.krl.visiteducationbackend.service.IRecordService;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.read.metadata.ReadSheet;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -107,8 +108,14 @@ public class RecordController {
                                        @RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
         try {
-            //对excel进行读取，在listern.RecordDTOLister被监听
-            EasyExcel.read(multipartFile.getInputStream(),RecordDTO.class,new RecordDTOListener(recordService)).sheet().doRead();
+            List<ReadSheet> readSheetList = EasyExcel.read(multipartFile.getInputStream()).build().excelExecutor().sheetList();
+
+            //读每个sheet
+            for(ReadSheet readSheet : readSheetList){
+                //对excel进行读取，在listern.RecordDTOLister被监听
+                EasyExcel.read(multipartFile.getInputStream(),RecordDTO.class,new RecordDTOListener(recordService)).sheet(readSheet.getSheetName()).doRead();
+            }
+
             responseWrapper=ResponseWrapper.markSuccess();
         } catch (IOException e) {
             responseWrapper=ResponseWrapper.markError();
