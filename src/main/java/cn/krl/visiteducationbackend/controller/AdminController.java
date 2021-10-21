@@ -57,9 +57,11 @@ public class AdminController {
             responseWrapper.setExtra("type",admin.getType());
             responseWrapper.setExtra("token",token);
         } catch (UnknownAccountException e) {
+            log.error("账号不存在");
             e.printStackTrace();
             responseWrapper=ResponseWrapper.markAccountError();
         } catch (IncorrectCredentialsException e){
+            log.error("账号或密码不正确");
             e.printStackTrace();
             responseWrapper=ResponseWrapper.markAccountError();
         }
@@ -84,6 +86,7 @@ public class AdminController {
 
         //超级管理员才有权限
         if(!AdminType.SUPER_ADMIN.getType().equals(type)){
+            log.warn("无操作权限");
             responseWrapper = ResponseWrapper.markApiNotPermission();
             return responseWrapper;
         }
@@ -148,10 +151,10 @@ public class AdminController {
 
         boolean isOK;
         if(AdminType.SUPER_ADMIN.getType().equals(type)){
-            //超级管理员 不更改其他超级管理员密码
-            isOK = !adminService.isSuper(targetId)||(id==targetId);
+            //超级管理员：普通管理员直接修改  其他超管不能修改  自己验证后修改
+            isOK = !adminService.isSuper(targetId)||(id==targetId&&adminService.testPassword(changePasswrodDTO));
         }else{
-            //普通管理员 密码验证正确  且修改自己的密码
+            //普通管理员：自己验证后修改
             isOK = adminService.testPassword(changePasswrodDTO)&&(id==targetId);
         }
         if(isOK){
@@ -191,6 +194,7 @@ public class AdminController {
         String type = JwtUtil.getClaimByName(token,"type").asString();
         //超级管理员才有权限
         if(!AdminType.SUPER_ADMIN.getType().equals(type)){
+            log.warn("无操作权限");
             responseWrapper = ResponseWrapper.markApiNotPermission();
             return responseWrapper;
         }

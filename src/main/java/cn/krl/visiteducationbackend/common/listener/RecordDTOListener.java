@@ -1,6 +1,7 @@
 package cn.krl.visiteducationbackend.common.listener;
 
 
+import cn.krl.visiteducationbackend.common.utils.ExcelCheckUtil;
 import cn.krl.visiteducationbackend.dto.RecordDTO;
 import cn.krl.visiteducationbackend.entity.Record;
 import cn.krl.visiteducationbackend.service.IRecordService;
@@ -13,9 +14,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-//不能被spring管理,读取excel则触发
+/**
+ * 不能被spring管理,读取excel则触发
+ */
 public class RecordDTOListener extends AnalysisEventListener<RecordDTO>{
 
+    private final char STAR = '*';
 
     /**
      * 每100条存储数据库，然后清空list
@@ -24,6 +28,9 @@ public class RecordDTOListener extends AnalysisEventListener<RecordDTO>{
     private static final int BATCH_COUNT=100;
     List<RecordDTO>  list= new ArrayList<RecordDTO>();
 
+    /**
+     * 不能使用@autowired
+     */
     private IRecordService recordService;
 
     public RecordDTOListener(){
@@ -44,7 +51,15 @@ public class RecordDTOListener extends AnalysisEventListener<RecordDTO>{
      * @param analysisContext
      */
     @Override
-    public void invoke(RecordDTO recordDTO, AnalysisContext analysisContext) {
+    public void invoke(RecordDTO recordDTO, AnalysisContext analysisContext){
+
+        //检查该记录
+        try{
+            recordDTO=ExcelCheckUtil.check(recordDTO);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
         //已存在数据库则不添加
         if (!recordService.exist(recordDTO)) {
             list.add(recordDTO);
@@ -78,5 +93,16 @@ public class RecordDTOListener extends AnalysisEventListener<RecordDTO>{
             records.add(record);
         }
         recordService.saveBatch(records);
+    }
+
+    @Override
+    public void onException(Exception exception, AnalysisContext context) {
+//        log.error("解析失败，但是继续解析下一行:{}", exception.getMessage());
+//        // 如果是某一个单元格的转换异常 能获取到具体行号
+//        // 如果要获取头的信息 配合invokeHeadMap使用
+//        if (exception instanceof ExcelDataConvertException) {
+//            ExcelDataConvertException excelDataConvertException = (ExcelDataConvertException)exception;
+//            log.error("第{}行，第{}列解析异常", excelDataConvertException.getLocalizedMessage());
+//        }
     }
 }
