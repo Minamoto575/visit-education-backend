@@ -3,6 +3,7 @@ package cn.krl.visiteducationbackend.controller;
 import cn.krl.visiteducationbackend.common.annotation.PassToken;
 import cn.krl.visiteducationbackend.common.listener.RecordDTOListener;
 import cn.krl.visiteducationbackend.common.response.ResponseWrapper;
+import cn.krl.visiteducationbackend.dao.ExcelErrorDAO;
 import cn.krl.visiteducationbackend.dto.RecordDTO;
 import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
 import cn.krl.visiteducationbackend.entity.Record;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +34,9 @@ public class RecordController {
 
     @Autowired
     private IRecordService recordService;
+
+    @Autowired
+    private ExcelErrorDAO excelErrorDAO;
 
     /**
      * 删除一条记录
@@ -107,22 +112,32 @@ public class RecordController {
     public ResponseWrapper postByExcel(@RequestPart("file") MultipartFile multipartFile,
                                        @RequestHeader("token")String token){
         ResponseWrapper responseWrapper;
+        List<String> errors = new ArrayList<>();
+
         try {
             List<ReadSheet> readSheetList = EasyExcel.read(multipartFile.getInputStream()).build().excelExecutor().sheetList();
             //读每个sheet
             for(ReadSheet readSheet : readSheetList){
                 //对excel进行读取，在listener.RecordDTOLister被监听
-                EasyExcel.read(multipartFile.getInputStream(),RecordDTO.class,new RecordDTOListener(recordService)).sheet(readSheet.getSheetName()).doRead();
+                EasyExcel.read(multipartFile.getInputStream(),RecordDTO.class,
+                    new RecordDTOListener(recordService,excelErrorDAO)).sheet(readSheet.getSheetName()).doRead();
             }
-            responseWrapper=ResponseWrapper.markSuccess();
+            responseWrapper = ResponseWrapper.markSuccess();
         } catch (Exception e) {
-            //异常源码中被封装了一次 所有取Cause
-            responseWrapper=ResponseWrapper.markDefault(409,e.getCause().getMessage());
-            e.printStackTrace();
+            responseWrapper = ResponseWrapper.markExcelOtherError();
+            //异常源码中被封装了一次 所以取Cause
+            log.error("excel导入系统错误："+e.getCause().getMessage());
         }
+
+        List<String> errorList = excelErrorDAO.getErrorList();
+        if(!errorList.isEmpty()){
+            responseWrapper = ResponseWrapper.markExcelCustomError();
+            responseWrapper.setExtra("errors",errorList);
+            log.error("excel导入自定义错误："+errorList.toString());
+        }
+
         return responseWrapper;
     }
-
 
     /**
      * 获取数据库中所有项目的列表

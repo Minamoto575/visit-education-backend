@@ -3,10 +3,7 @@ package cn.krl.visiteducationbackend.common.utils;
 import cn.krl.visiteducationbackend.common.enums.ExcelErrorType;
 import cn.krl.visiteducationbackend.common.enums.ProjectType;
 import cn.krl.visiteducationbackend.dto.RecordDTO;
-import com.alibaba.excel.exception.ExcelAnalysisStopException;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.alibaba.excel.exception.ExcelAnalysisException;
 
 /**
  * Excel导入 检查工具类
@@ -39,16 +36,16 @@ public class ExcelCheckUtil{
          * 专业代码不合法
          */
         if(!codeIsLeage(subjectCode)){
-            throw new ExcelAnalysisStopException(ExcelErrorType.ILLEGAL_SUBJECTCODE.getType() + ": " + subjectCode);
+            throw new ExcelAnalysisException(ExcelErrorType.ILLEGAL_SUBJECTCODE.getType() + ": " + subjectCode);
         }
 
 
         /**
          * 课题名称乱码
          */
-        if(isMessyCode(taskName)){
-            throw new ExcelAnalysisStopException(ExcelErrorType.ILLEGAL_TASKNAME.getType()+ ": " + taskName);
-        }
+//        if(isGB2312(taskName)){
+//            throw new ExcelAnalysisStopException(ExcelErrorType.ILLEGAL_TASKNAME.getType()+ ": " + taskName);
+//        }
 
 
         /**
@@ -72,10 +69,8 @@ public class ExcelCheckUtil{
                 teacherName = teacherName.substring(0,teacherName.length()-1);
             }
         }else {
-            throw new ExcelAnalysisStopException(ExcelErrorType.ILLEGAL_PROJECTNAME.getType());
+            throw new ExcelAnalysisException(ExcelErrorType.ILLEGAL_PROJECTNAME.getType());
         }
-
-
 
         recordDTO.setTeacherName(teacherName);
         return recordDTO;
@@ -96,22 +91,22 @@ public class ExcelCheckUtil{
         String taskName = recordDTO.getTaskName();
 
         if(isEmptyOrNull(projectName)){
-            throw new ExcelAnalysisStopException(ExcelErrorType.NULL_PROJECTNAME.getType());
+            throw new ExcelAnalysisException(ExcelErrorType.NULL_PROJECTNAME.getType());
         }
         if(isEmptyOrNull(teacherName)){
-            throw new ExcelAnalysisStopException(ExcelErrorType.NULL_TEACHERNAME.getType());
+            throw new ExcelAnalysisException(ExcelErrorType.NULL_TEACHERNAME.getType());
         }
         if(isEmptyOrNull(schoolName)){
-            throw new ExcelAnalysisStopException(ExcelErrorType.NULL_SCHOOLNAME.getType());
+            throw new ExcelAnalysisException(ExcelErrorType.NULL_SCHOOLNAME.getType());
         }
         if(isEmptyOrNull(subjectCode)){
-            throw new ExcelAnalysisStopException(ExcelErrorType.NULL_SUBJECTCODE.getType());
+            throw new ExcelAnalysisException(ExcelErrorType.NULL_SUBJECTCODE.getType());
         }
         if(isEmptyOrNull(subjectName)){
-            throw new ExcelAnalysisStopException(ExcelErrorType.NULL_SUBJECTNAME.getType());
+            throw new ExcelAnalysisException(ExcelErrorType.NULL_SUBJECTNAME.getType());
         }
         if(isEmptyOrNull(taskName)){
-            throw new ExcelAnalysisStopException(ExcelErrorType.NULL_TASKNAME.getType());
+            throw new ExcelAnalysisException(ExcelErrorType.NULL_TASKNAME.getType());
         }
     }
 
@@ -130,57 +125,69 @@ public class ExcelCheckUtil{
      * @param strName
      * @return
      */
-    public static boolean isMessyCode(String strName) {
+//    public static boolean isMessyCode(String strName) {
+//
+//        Pattern p = Pattern.compile("\\s*|\t*|\r*|\n*");
+//        Matcher m = p.matcher(strName);
+//        String after = m.replaceAll("");
+//        String temp = after.replaceAll("\\p{P}", "");
+//        char[] ch = temp.trim().toCharArray();
+//
+////        char[] indexs = {'①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'};
+//        int length = (ch != null) ? ch.length : 0;
+//        for (int i = 0; i < length; i++) {
+//            char c = ch[i];
+//            //字母、数字、中文放行
+//            if (!Character.isLetterOrDigit(c)) {
+//                String str = "" + ch[i];
+//                String regex = "[\u4e00-\u9fa5|'①'|'②'|'③'|'④'|'⑤'|'⑥'|'⑦'|'⑧'|'⑨'|'⑩'|'+'|'('|')" +
+//                    "'|'-'|'（'|'）'|':'|'：'|'  '|'、'|'　'|'\"'|'“'|'”']+";
+//                if (!str.matches(regex)) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
-        Pattern p = Pattern.compile("\\s*|\t*|\r*|\n*");
-        Matcher m = p.matcher(strName);
-        String after = m.replaceAll("");
-        String temp = after.replaceAll("\\p{P}", "");
-        char[] ch = temp.trim().toCharArray();
 
-//        char[] indexs = {'①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'};
-        int length = (ch != null) ? ch.length : 0;
-        for (int i = 0; i < length; i++) {
-            char c = ch[i];
-            //字母、数字、中文放行
-            if (!Character.isLetterOrDigit(c)) {
-                String str = "" + ch[i];
-                String regex = "[\u4e00-\u9fa5|'①'|'②'|'③'|'④'|'⑤'|'⑥'|'⑦'|'⑧'|'⑨'|'⑩'|'+'|'('|')" +
-                    "'|'-'|'（'|'）'|':'|'：'|'  ']+";
-                if (!str.matches(regex)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+//    public static boolean isGB2312(String str){
+//        char[] chars=str.toCharArray();
+//        boolean isGB2312=false;
+//        for(int i=0;i<chars.length;i++){
+//            byte[] bytes=(""+chars[i]).getBytes();
+//            if(bytes.length==2){
+//                int[] ints=new int[2];
+//                ints[0]=bytes[0]& 0xff;
+//                ints[1]=bytes[1]& 0xff;
+//                if(ints[0]>=0x81 && ints[0]<=0xFE && ints[1]>=0x40 && ints[1]<=0xFE){
+//                    isGB2312=true;
+//                    break;
+//                }
+//            }
+//        }
+//        return isGB2312;
+//    }
 
     /**
-     * 检查专业代码是否合法
+     * 检查专业代码的位数是否合法 4、6、8
      * @param subjectCode
      * @return
      */
     private static boolean codeIsLeage(String subjectCode){
-
+        subjectCode = subjectCode.trim();
         /**
-         * 一些专业的代码有些奇怪 不想再建数据库了 在此枚举
+         * subjectCode 可能是 111111/222222 这种类型 含多个code
          */
-        String[] subjects = {"050302z1","1001Z7","1001Z8"};
-
-        for(String subject:subjects){
-            if(subject.equals(subjectCode)){
-                return true;
-            }
-        }
-
-        char[] codes = subjectCode.trim().toCharArray();
-        for(char ch : codes){
-            if(!Character.isDigit(ch)){
+        String[] codes = subjectCode.split("[/|'\\\\'|;|；|,|，|、|' '|'  '|'   '|'\\n'|'\\r'|'\\t']");
+        for(String code: codes){
+            code = code.replace(" ","");
+            int length = code.length();
+            if(!(length==4||length==5||length==6||length==8)){
                 return false;
             }
         }
         return true;
     }
-
 
 }

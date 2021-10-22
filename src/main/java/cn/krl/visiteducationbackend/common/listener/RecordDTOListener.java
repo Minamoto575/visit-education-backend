@@ -2,13 +2,13 @@ package cn.krl.visiteducationbackend.common.listener;
 
 
 import cn.krl.visiteducationbackend.common.utils.ExcelCheckUtil;
+import cn.krl.visiteducationbackend.dao.ExcelErrorDAO;
 import cn.krl.visiteducationbackend.dto.RecordDTO;
 import cn.krl.visiteducationbackend.entity.Record;
 import cn.krl.visiteducationbackend.service.IRecordService;
-import cn.krl.visiteducationbackend.service.Impl.RecordServiceImpl;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
-import com.alibaba.excel.exception.ExcelAnalysisStopException;
+import com.alibaba.excel.exception.ExcelAnalysisException;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
@@ -22,30 +22,35 @@ import java.util.List;
  */
 public class RecordDTOListener extends AnalysisEventListener<RecordDTO>{
 
-    private final char STAR = '*';
-
     /**
      * 每100条存储数据库，然后清空list
      * 服务器内存小  BATCH_COUNT不能过大
      */
     private static final int BATCH_COUNT=100;
+
+    /**
+     * list缓冲区
+     */
     List<RecordDTO>  list= new ArrayList<RecordDTO>();
 
     /**
      * 不能使用@autowired
      */
     private IRecordService recordService;
+    private ExcelErrorDAO excelErrorDAO;
 
-    public RecordDTOListener(){
-        recordService = new RecordServiceImpl();
-    }
+//    public RecordDTOListener(){
+//        recordService = new RecordServiceImpl();
+//        excelErrorDAO = new ExcelErrorDAO();
+//    }
 
     /**
      * 带参构造导入spring注入的service，可以使用自定义的方法
      * @param recordService
      */
-    public RecordDTOListener(IRecordService recordService){
+    public RecordDTOListener(IRecordService recordService,ExcelErrorDAO excelErrorDAO){
         this.recordService = recordService;
+        this.excelErrorDAO = excelErrorDAO;
     }
 
     /**
@@ -66,20 +71,6 @@ public class RecordDTOListener extends AnalysisEventListener<RecordDTO>{
             saveData();
             list.clear();
         }
-//        try{
-//            recordDTO=ExcelCheckUtil.check(recordDTO);
-//            //已存在数据库则不添加
-//            if (!recordService.exist(recordDTO)) {
-//                list.add(recordDTO);
-//            }
-//            //缓存装满了做一次数据库写
-//            if(list.size()>=BATCH_COUNT){
-//                saveData();
-//                list.clear();
-//            }
-//        }catch (Exception e){
-//            //throw new RuntimeException(e.getMessage());
-//        }
     }
 
     /**
@@ -108,24 +99,20 @@ public class RecordDTOListener extends AnalysisEventListener<RecordDTO>{
     }
 
     /**
-     * excel处理中的异常捕获
+     * excel处理中的异常捕获  不抛出异常则继续解析
      * @param exception
      * @param context
-     * @throws Exception
      */
     @Override
-    public void onException(Exception exception, AnalysisContext context) throws Exception {
-
+    public void onException(Exception exception, AnalysisContext context) {
+        System.out.println(exception.getMessage());
         //excel解析异常
-        if(exception instanceof ExcelAnalysisStopException){
-            ExcelAnalysisStopException e = (ExcelAnalysisStopException)exception;
+        if(exception instanceof ExcelAnalysisException){
+            ExcelAnalysisException e = (ExcelAnalysisException)exception;
             String sheetName = context.readSheetHolder().getSheetName();
             int rowIndex = context.readRowHolder().getRowIndex();
-            throw new Exception(sheetName+",第"+rowIndex+"条记录，解析出错: "+e.getMessage());
-        }else{
-            exception.printStackTrace();
+            String error = sheetName+",第"+rowIndex+"条记录:"+e.getMessage();
+            excelErrorDAO.addError(error);
         }
-
-
     }
 }

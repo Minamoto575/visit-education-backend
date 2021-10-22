@@ -15,8 +15,8 @@ public enum ExcelErrorType {
 
 
     ILLEGAL_TASKNAME(10,"课题名称乱码"),
-    ILLEGAL_PROJECTNAME(11,"非法的项目名称"),
-    ILLEGAL_SUBJECTCODE(12,"非法的专业代码");
+    ILLEGAL_PROJECTNAME(11,"项目名称不合法"),
+    ILLEGAL_SUBJECTCODE(12,"专业代码位数不合法");
 
 
     private Integer code;

@@ -152,6 +152,30 @@ public class ResponseWrapper {
     }
 
     /**
+     * excel导入自定义错误
+     * @return
+     */
+    public static ResponseWrapper markExcelCustomError(){
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        responseWrapper.setCode(ResponseCode.EXCEL_CUSTOMERROR.getCode());
+        responseWrapper.setMsg(ResponseCode.EXCEL_CUSTOMERROR.getMsg());
+        return responseWrapper;
+    }
+
+    /**
+     * excel导入其他错误
+     * @return
+     */
+    public static ResponseWrapper markExcelOtherError(){
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        responseWrapper.setCode(ResponseCode.EXCEL_OTHERERROR.getCode());
+        responseWrapper.setMsg(ResponseCode.EXCEL_OTHERERROR.getMsg());
+        return responseWrapper;
+    }
+
+
+
+    /**
      * 包装ResponseWrapper
      * @param tag Tag名称
      * @param jsonArray JSON数据
