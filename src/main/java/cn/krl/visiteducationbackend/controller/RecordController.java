@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -110,17 +109,15 @@ public class RecordController {
         ResponseWrapper responseWrapper;
         try {
             List<ReadSheet> readSheetList = EasyExcel.read(multipartFile.getInputStream()).build().excelExecutor().sheetList();
-
             //读每个sheet
             for(ReadSheet readSheet : readSheetList){
                 //对excel进行读取，在listener.RecordDTOLister被监听
                 EasyExcel.read(multipartFile.getInputStream(),RecordDTO.class,new RecordDTOListener(recordService)).sheet(readSheet.getSheetName()).doRead();
             }
-            
-
             responseWrapper=ResponseWrapper.markSuccess();
-        } catch (IOException e) {
-            responseWrapper=ResponseWrapper.markError();
+        } catch (Exception e) {
+            //异常源码中被封装了一次 所有取Cause
+            responseWrapper=ResponseWrapper.markDefault(409,e.getCause().getMessage());
             e.printStackTrace();
         }
         return responseWrapper;

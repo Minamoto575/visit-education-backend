@@ -8,6 +8,7 @@ import cn.krl.visiteducationbackend.service.IRecordService;
 import cn.krl.visiteducationbackend.service.Impl.RecordServiceImpl;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.exception.ExcelAnalysisStopException;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
@@ -54,22 +55,31 @@ public class RecordDTOListener extends AnalysisEventListener<RecordDTO>{
      */
     @Override
     public void invoke(RecordDTO recordDTO, AnalysisContext analysisContext){
-
         //检查该记录
-        try{
-            recordDTO=ExcelCheckUtil.check(recordDTO);
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-
+        recordDTO=ExcelCheckUtil.check(recordDTO);
         //已存在数据库则不添加
         if (!recordService.exist(recordDTO)) {
             list.add(recordDTO);
         }
+        //缓存装满了做一次数据库写
         if(list.size()>=BATCH_COUNT){
             saveData();
             list.clear();
         }
+//        try{
+//            recordDTO=ExcelCheckUtil.check(recordDTO);
+//            //已存在数据库则不添加
+//            if (!recordService.exist(recordDTO)) {
+//                list.add(recordDTO);
+//            }
+//            //缓存装满了做一次数据库写
+//            if(list.size()>=BATCH_COUNT){
+//                saveData();
+//                list.clear();
+//            }
+//        }catch (Exception e){
+//            //throw new RuntimeException(e.getMessage());
+//        }
     }
 
     /**
@@ -97,14 +107,25 @@ public class RecordDTOListener extends AnalysisEventListener<RecordDTO>{
         recordService.saveBatch(records);
     }
 
+    /**
+     * excel处理中的异常捕获
+     * @param exception
+     * @param context
+     * @throws Exception
+     */
     @Override
-    public void onException(Exception exception, AnalysisContext context) {
-//        log.error("解析失败，但是继续解析下一行:{}", exception.getMessage());
-//        // 如果是某一个单元格的转换异常 能获取到具体行号
-//        // 如果要获取头的信息 配合invokeHeadMap使用
-//        if (exception instanceof ExcelDataConvertException) {
-//            ExcelDataConvertException excelDataConvertException = (ExcelDataConvertException)exception;
-//            log.error("第{}行，第{}列解析异常", excelDataConvertException.getLocalizedMessage());
-//        }
+    public void onException(Exception exception, AnalysisContext context) throws Exception {
+
+        //excel解析异常
+        if(exception instanceof ExcelAnalysisStopException){
+            ExcelAnalysisStopException e = (ExcelAnalysisStopException)exception;
+            String sheetName = context.readSheetHolder().getSheetName();
+            int rowIndex = context.readRowHolder().getRowIndex();
+            throw new Exception(sheetName+",第"+rowIndex+"条记录，解析出错: "+e.getMessage());
+        }else{
+            exception.printStackTrace();
+        }
+
+
     }
 }

@@ -24,6 +24,7 @@ public enum  ResponseCode {
     UNKNOWN_IP(406, "非法IP请求"),
     ADMIN_EXIST(407,"该用户名已被使用"),
     PASSWORD_ERROR(408,"密码错误"),
+    //EXCEL_ERROR(409,"excel解析出错"),
     SYSTEM_ERROR(500, "系统异常"),
     /**
      * 900以上，判定为前端同一处理的异常
