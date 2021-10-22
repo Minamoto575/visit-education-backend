@@ -10,6 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * 自定义过滤器 用于解决前端跨域和预请求
+ * @author kuang
+ */
 @Configuration
 public class CrosFilter implements Filter {
     @Override

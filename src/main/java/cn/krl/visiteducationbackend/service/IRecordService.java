@@ -7,6 +7,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
+
+/**
+ * 记录服务层接口
+ * @author kuang
+ */
 public interface IRecordService extends IService<Record> {
 
     /**

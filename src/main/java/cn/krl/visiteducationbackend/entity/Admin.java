@@ -9,8 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 管理员实体
+ * @author kuang
+ */
 @Data
-//@Entity
 @ApiModel(value = "管理员实体")
 @AllArgsConstructor
 @NoArgsConstructor

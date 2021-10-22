@@ -1,5 +1,9 @@
 package cn.krl.visiteducationbackend.common.response;
 
+/**
+ * 自定义的响应码
+ * @author kuang
+ */
 public enum  ResponseCode {
     /**
      * 200 ~ 399 判定为正常、合法的操作

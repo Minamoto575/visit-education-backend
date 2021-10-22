@@ -6,7 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
+/**
+ * jwt拦截器的配置类
+ * @author kuang
+ */
 @Configuration
 public class JwtInterceptorConfig implements WebMvcConfigurer {
     @Override

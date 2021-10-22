@@ -14,6 +14,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * 记录服务层实现类
+ * @author kuang
+ */
 @Service
 public class RecordServiceImpl extends ServiceImpl<RecordMapper,Record> implements IRecordService {
 

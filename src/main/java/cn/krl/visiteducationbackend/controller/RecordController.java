@@ -23,6 +23,7 @@ import java.util.List;
 
 /**
  * 记录控制器，token的产生与验证由jwt控制，放在参数中是为了用swagger测试，控制器中不对token做校验
+ * @author kuang
  */
 @RestController
 @Api(tags = "记录的api")

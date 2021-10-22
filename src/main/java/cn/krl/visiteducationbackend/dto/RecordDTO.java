@@ -9,6 +9,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+
+/**
+ * 记录数据传输对象
+ * @author kuang
+ */
 @ApiModel(value = "记录传输对象")
 @Data
 @AllArgsConstructor

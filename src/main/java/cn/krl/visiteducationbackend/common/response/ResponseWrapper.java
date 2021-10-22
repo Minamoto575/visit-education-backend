@@ -9,6 +9,10 @@ import lombok.Data;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 响应包装类 返回给前端
+ * @author kuang
+ */
 @Data
 @ApiModel(value = "响应")
 @AllArgsConstructor

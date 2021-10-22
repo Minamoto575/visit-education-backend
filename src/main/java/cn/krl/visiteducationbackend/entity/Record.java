@@ -9,9 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+/**
+ * 记录实体
+ * @author kuang
+ */
 @Data
-//@Entity
 @ApiModel(value = "记录实体")
 @AllArgsConstructor
 @NoArgsConstructor

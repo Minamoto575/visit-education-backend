@@ -16,6 +16,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
+/**
+ * 管理员服务层实现类
+ * @author kuang
+ */
 @Service
 public class AdminServiceImpl extends ServiceImpl<AdminMapper,Admin> implements IAdminService {
 

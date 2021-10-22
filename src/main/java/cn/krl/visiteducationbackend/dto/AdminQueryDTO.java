@@ -6,7 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+/**
+ * 管理员查询数据传输对象
+ * @author kuang
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

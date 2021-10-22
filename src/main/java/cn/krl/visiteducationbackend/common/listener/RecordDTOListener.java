@@ -15,7 +15,9 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * excel读取的监听器 发生excel读则触发
  * 不能被spring管理,读取excel则触发
+ * @author kuang
  */
 public class RecordDTOListener extends AnalysisEventListener<RecordDTO>{
 

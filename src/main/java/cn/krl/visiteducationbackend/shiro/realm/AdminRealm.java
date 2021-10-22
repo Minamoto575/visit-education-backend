@@ -14,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 
 
-//可信的数据源
+/**
+ * 自定义的管理员Realm 理解为可靠的登录、权限来源  一般存在数据库中
+ * @author kuang
+ */
 public class AdminRealm extends AuthorizingRealm {
 
     @Autowired

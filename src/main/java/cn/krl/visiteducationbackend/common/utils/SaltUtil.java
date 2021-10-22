@@ -2,6 +2,10 @@ package cn.krl.visiteducationbackend.common.utils;
 
 import java.util.Random;
 
+/**
+ * salt 随机生成工具
+ * @author kuang
+ */
 public class SaltUtil {
     /**
      * 生成长度为n的随机字符串

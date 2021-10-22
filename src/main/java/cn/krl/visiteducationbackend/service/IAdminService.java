@@ -7,6 +7,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
+/**
+ * 管理员服务层接口
+ * @author kuang
+ */
 public interface IAdminService extends IService<Admin> {
 
 

@@ -1,5 +1,9 @@
 package cn.krl.visiteducationbackend.common.enums;
 
+/**
+ * 管理员类型
+ * @author kuang
+ */
 public enum AdminType {
 
     SUPER_ADMIN(0,"super"),

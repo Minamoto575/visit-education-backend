@@ -1,5 +1,10 @@
 package cn.krl.visiteducationbackend.common.enums;
 
+
+/**
+ * 项目的枚举类型
+ * @author kuang
+ */
 public enum ProjectType {
 
     QINGGU_PROJECT(0,"中西部青年骨干教师访学项目"),

@@ -10,6 +10,11 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * jwt工具 用于token的生成和验证
+ * 实际上与shiro的seeionId功能重叠 因为后端先用了shiro 前端模板要求token 所有集成了jwt 而且我也不想
+ * @author kuang
+ */
 public class JwtUtil {
     private static String secret = "ILOVEWHU";
     

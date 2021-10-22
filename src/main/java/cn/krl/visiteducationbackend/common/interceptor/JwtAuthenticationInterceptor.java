@@ -12,7 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 
-
+/**
+ * jwt拦截器
+ * @author kuang
+ */
 public class JwtAuthenticationInterceptor implements HandlerInterceptor {
     @Autowired
     IAdminService adminService;

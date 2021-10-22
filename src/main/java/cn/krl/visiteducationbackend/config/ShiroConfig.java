@@ -10,7 +10,10 @@ import org.springframework.context.annotation.Configuration;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * shiro配置类
+ * @author kuang
+ */
 @Configuration
 public class ShiroConfig {
     //ShiroFilter过滤所有请求

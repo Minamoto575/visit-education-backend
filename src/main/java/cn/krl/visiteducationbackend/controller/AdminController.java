@@ -22,6 +22,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+/**
+ * 管理员控制器
+ * @author kuang
+ */
 @RestController
 @Api(tags = "管理者的api")
 @RequestMapping("/admin")

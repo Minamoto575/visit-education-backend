@@ -1,5 +1,9 @@
 package cn.krl.visiteducationbackend.common.enums;
 
+/**
+ * excel导入可能出现的错误类型
+ * @author kuang
+ */
 public enum ExcelErrorType {
 
     NULL_TEACHERNAME(0,"教师名称为空"),

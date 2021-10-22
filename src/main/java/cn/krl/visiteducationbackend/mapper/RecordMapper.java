@@ -6,6 +6,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 
+/**
+ * 记录mapper
+ * @author kuang
+ */
 @Mapper
 public interface RecordMapper extends BaseMapper<Record> {
     /**

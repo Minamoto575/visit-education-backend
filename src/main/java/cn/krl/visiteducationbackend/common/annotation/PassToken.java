@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 
 /**
  * 跳过token验证
+ * @author kuang
  */
 public @interface PassToken {
     boolean required() default true;

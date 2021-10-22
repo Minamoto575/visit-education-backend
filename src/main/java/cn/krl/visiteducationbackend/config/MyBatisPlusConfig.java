@@ -8,11 +8,14 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * mybatis-plus配置类
+ * @author kuang
+ */
 @Configuration
 @MapperScan("cn.krl.visiteducationbackend.mapper")
 public class MyBatisPlusConfig {
 
-    // 最新版
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();

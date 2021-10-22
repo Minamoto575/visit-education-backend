@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-
+/**
+ * 管理员数据传输对象
+ * @author kuang
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

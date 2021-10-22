@@ -9,6 +9,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+
+/**
+ * 记录查询数据传输对象
+ * @author kuang
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

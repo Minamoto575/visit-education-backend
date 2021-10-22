@@ -4,6 +4,10 @@ import cn.krl.visiteducationbackend.common.enums.ExcelErrorType;
 import cn.krl.visiteducationbackend.common.enums.ProjectType;
 import cn.krl.visiteducationbackend.dto.RecordDTO;
 
+/**
+ * Excel导入 检查工具类
+ * @author kuang
+ */
 public class ExcelCheckUtil{
 
     private  static final char STAR = '*';
