@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * 密码修改数据传输对象
+ * @description 密码修改数据传输对象
  * @author kuang
+ * @data 2021/10/24
  */
 @Data
 @AllArgsConstructor
@@ -18,16 +19,12 @@ import java.io.Serializable;
 @ApiModel(value = "修改密码传输对象")
 public class ChangePasswrodDTO implements Serializable {
 
-    @ApiModelProperty(name = "id",value = "管理员id",dataType = "Integer")
+    @ApiModelProperty(name = "id", value = "管理员id", dataType = "Integer")
     private Integer id;
 
-
-    @ApiModelProperty(name="oldPassword",value = "旧密码",dataType = "String")
+    @ApiModelProperty(name = "oldPassword", value = "旧密码", dataType = "String")
     private String oldPassword;
 
-
-    @ApiModelProperty(name="newPassword",value = "旧密码",dataType = "String")
+    @ApiModelProperty(name = "newPassword", value = "旧密码", dataType = "String")
     private String newPassword;
-
-
 }

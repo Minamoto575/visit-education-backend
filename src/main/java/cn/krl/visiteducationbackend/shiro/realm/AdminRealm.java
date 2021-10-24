@@ -13,15 +13,14 @@ import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 
-
 /**
- * 自定义的管理员Realm 理解为可靠的登录、权限来源  一般存在数据库中
+ * @description 自定义的管理员Realm 理解为可靠的登录、权限来源 一般存在数据库中
  * @author kuang
+ * @data 2021/10/24
  */
 public class AdminRealm extends AuthorizingRealm {
 
-    @Autowired
-    private IAdminService adminService;
+    @Autowired private IAdminService adminService;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
@@ -29,12 +28,17 @@ public class AdminRealm extends AuthorizingRealm {
     }
 
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken)
+            throws AuthenticationException {
         String principal = (String) authenticationToken.getPrincipal();
-        //读取数据库中的Admin
+        // 读取数据库中的Admin
         Admin admin = adminService.getByName(principal);
         if (!ObjectUtils.isEmpty(admin)) {
-            return new SimpleAuthenticationInfo(admin.getName(), admin.getPassword(), ByteSource.Util.bytes(admin.getSalt()), this.getName());
+            return new SimpleAuthenticationInfo(
+                    admin.getName(),
+                    admin.getPassword(),
+                    ByteSource.Util.bytes(admin.getSalt()),
+                    this.getName());
         }
         return null;
     }

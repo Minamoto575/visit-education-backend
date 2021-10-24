@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * 管理员数据传输对象
+ * @description 管理员数据传输对象
  * @author kuang
+ * @data 2021/10/24
  */
 @Data
 @AllArgsConstructor
@@ -18,14 +19,12 @@ import java.io.Serializable;
 @ApiModel(value = "管理员传输对象")
 public class AdminDTO implements Serializable {
 
-    @ApiModelProperty(name = "id",value = "管理员id",dataType = "Integer")
+    @ApiModelProperty(name = "id", value = "管理员id", dataType = "Integer")
     private Integer id;
 
-
-    @ApiModelProperty(name="name",value = "管理员名称",dataType = "String")
+    @ApiModelProperty(name = "name", value = "管理员名称", dataType = "String")
     private String name;
 
-
-    @ApiModelProperty(name="password",value = "密码",dataType = "String")
+    @ApiModelProperty(name = "password", value = "密码", dataType = "String")
     private String password;
 }

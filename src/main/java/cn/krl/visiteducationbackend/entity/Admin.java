@@ -10,8 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 管理员实体
+ * @description 实体管理类
  * @author kuang
+ * @data 2021/10/24 21:22
  */
 @Data
 @ApiModel(value = "管理员实体")
@@ -20,20 +21,20 @@ import lombok.NoArgsConstructor;
 @TableName("admin")
 public class Admin {
 
-    @TableId(value = "id",type = IdType.AUTO)
-    @ApiModelProperty(name = "id",value = "管理员id",dataType = "Integer")
+    @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(name = "id", value = "管理员id", dataType = "Integer")
     private Integer id;
 
-    @ApiModelProperty(name="type",value = "管理员类型 super为超级管理员、common为普通",dataType = "String")
+    @ApiModelProperty(name = "type", value = "管理员类型 super为超级管理员、common为普通", dataType = "String")
     private String type;
 
-    @ApiModelProperty(name="name",value = "管理员名称",dataType = "String")
+    @ApiModelProperty(name = "name", value = "管理员名称", dataType = "String")
     private String name;
 
-    @ApiModelProperty(name="password",value = "密码",dataType = "String")
+    @ApiModelProperty(name = "password", value = "密码", dataType = "String")
     private String password;
 
-    @ApiModelProperty(name="salt",value = "盐",dataType = "String")
+    @ApiModelProperty(name = "salt", value = "盐", dataType = "String")
     private String salt;
 
     private Long gmtCreate;

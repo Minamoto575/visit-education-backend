@@ -1,6 +1,5 @@
 package cn.krl.visiteducationbackend.config;
 
-
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
@@ -9,13 +8,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * mybatis-plus配置类
+ * @description mybatis-plus配置类
  * @author kuang
+ * @data 2021/10/24
  */
 @Configuration
 @MapperScan("cn.krl.visiteducationbackend.mapper")
 public class MyBatisPlusConfig {
-
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();

@@ -10,8 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 记录实体
+ * @description 记录实体类
  * @author kuang
+ * @data 2021/10/24 21:22
  */
 @Data
 @ApiModel(value = "记录实体")
@@ -20,30 +21,29 @@ import lombok.NoArgsConstructor;
 @TableName("record")
 public class Record {
 
-    @TableId(value = "id",type = IdType.AUTO)
-    @ApiModelProperty(name = "id",value = "总序号",dataType = "Integer")
+    @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(name = "id", value = "总序号", dataType = "Integer")
     private Integer id;
 
-    @ApiModelProperty(name = "schoolName",value = "学校名称",dataType = "String")
+    @ApiModelProperty(name = "schoolName", value = "学校名称", dataType = "String")
     private String schoolName;
 
-    @ApiModelProperty(name = "subjectName",value = "学科专业名称",dataType = "String")
+    @ApiModelProperty(name = "subjectName", value = "学科专业名称", dataType = "String")
     private String subjectName;
 
-    @ApiModelProperty(name = "subjectCode",value = "学科专业代码",dataType = "String")
+    @ApiModelProperty(name = "subjectCode", value = "学科专业代码", dataType = "String")
     private String subjectCode;
 
-    @ApiModelProperty(name = "teacherName",value = "教师名称",dataType = "String")
+    @ApiModelProperty(name = "teacherName", value = "教师名称", dataType = "String")
     private String teacherName;
 
-    @ApiModelProperty(name = "taskName",value = "课题名称",dataType = "String")
+    @ApiModelProperty(name = "taskName", value = "课题名称", dataType = "String")
     private String taskName;
 
-    @ApiModelProperty(name = "projectName",value = "项目名称",dataType = "String")
+    @ApiModelProperty(name = "projectName", value = "项目名称", dataType = "String")
     private String projectName;
 
     private Long gmtCreate;
 
     private Long gmtModified;
-
 }

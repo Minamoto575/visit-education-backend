@@ -10,8 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 响应包装类 返回给前端
+ * @description 响应包装类 返回给前端
  * @author kuang
+ * @data 2021/10/24
  */
 @Data
 @ApiModel(value = "响应")
@@ -22,97 +23,75 @@ public class ResponseWrapper {
     private String msg;
     private Map<String, Object> extra;
 
-
-    /**
-     * 私有的构造函数
-     */
+    /** 私有的构造函数 */
     private ResponseWrapper() {}
 
-    /**
-     * 自定义返回结果
-     */
-    public static ResponseWrapper markDefault(int code,String msg){
+    /** 自定义返回结果 */
+    public static ResponseWrapper markDefault(int code, String msg) {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(code);
         responseWrapper.setMsg(msg);
         return responseWrapper;
     }
 
-    /**
-     * 查询成功且有数据
-     */
-    public static ResponseWrapper markSuccess(){
+    /** 查询成功且有数据 */
+    public static ResponseWrapper markSuccess() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
-        return  responseWrapper;
+        return responseWrapper;
     }
 
-    /**
-     * 操作成功，但无记录
-     */
-    public static ResponseWrapper markNoData(){
+    /** 操作成功，但无记录 */
+    public static ResponseWrapper markNoData() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.NODATA.getCode());
         responseWrapper.setMsg(ResponseCode.NODATA.getMsg());
         return responseWrapper;
     }
 
-    /**
-     * 操作成功，但记录已存在
-     */
-    public static ResponseWrapper markDataExisted(){
+    /** 操作成功，但记录已存在 */
+    public static ResponseWrapper markDataExisted() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.DATA_EXISTED.getCode());
         responseWrapper.setMsg(ResponseCode.DATA_EXISTED.getMsg());
         return responseWrapper;
     }
 
-
-    /**
-     * 参数为空或者参数格式错误
-     */
-    public static ResponseWrapper markParamError(){
+    /** 参数为空或者参数格式错误 */
+    public static ResponseWrapper markParamError() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.PARAMS_ERROR.getCode());
         responseWrapper.setMsg(ResponseCode.PARAMS_ERROR.getMsg());
         return responseWrapper;
     }
 
-    /**
-     * 查询失败
-     */
-    public static ResponseWrapper markError(){
+    /** 查询失败 */
+    public static ResponseWrapper markError() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.FAILED.getCode());
         responseWrapper.setMsg(ResponseCode.FAILED.getMsg());
         return responseWrapper;
     }
 
-    /**
-     * 无效URL链接
-     */
-    public static ResponseWrapper markUrlError(){
+    /** 无效URL链接 */
+    public static ResponseWrapper markUrlError() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.URL_ERROR.getCode());
         responseWrapper.setMsg(ResponseCode.URL_ERROR.getMsg());
         return responseWrapper;
     }
 
-    /**
-     * 系统异常
-     */
-    public static ResponseWrapper markSystemError(){
+    /** 系统异常 */
+    public static ResponseWrapper markSystemError() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.SYSTEM_ERROR.getCode());
         responseWrapper.setMsg(ResponseCode.SYSTEM_ERROR.getMsg());
         return responseWrapper;
     }
 
-    /**
-     * 没有该API访问权限
-     */
-    public static ResponseWrapper markApiNotPermission(){
+    /** 没有该API访问权限 */
+    public static ResponseWrapper markApiNotPermission() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.API_NOT_PER.getCode());
         responseWrapper.setMsg(ResponseCode.API_NOT_PER.getMsg());
@@ -121,30 +100,30 @@ public class ResponseWrapper {
 
     /**
      * 账号或者密码错误
+     *
      * @return
      */
-    public static ResponseWrapper markAccountError(){
+    public static ResponseWrapper markAccountError() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.ACCOUNT_ERROR.getCode());
         responseWrapper.setMsg(ResponseCode.ACCOUNT_ERROR.getMsg());
         return responseWrapper;
     }
 
-    /**
-     * 用户名已被使用
-     */
-    public static ResponseWrapper markAdminExist(){
+    /** 用户名已被使用 */
+    public static ResponseWrapper markAdminExist() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.ADMIN_EXIST.getCode());
         responseWrapper.setMsg(ResponseCode.ADMIN_EXIST.getMsg());
-        return  responseWrapper;
+        return responseWrapper;
     }
 
     /**
      * 密码错误
+     *
      * @return
      */
-    public static ResponseWrapper markPasswordError(){
+    public static ResponseWrapper markPasswordError() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.PASSWORD_ERROR.getCode());
         responseWrapper.setMsg(ResponseCode.PASSWORD_ERROR.getMsg());
@@ -153,9 +132,10 @@ public class ResponseWrapper {
 
     /**
      * excel导入自定义错误
+     *
      * @return
      */
-    public static ResponseWrapper markExcelCustomError(){
+    public static ResponseWrapper markExcelCustomError() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.EXCEL_CUSTOMERROR.getCode());
         responseWrapper.setMsg(ResponseCode.EXCEL_CUSTOMERROR.getMsg());
@@ -164,19 +144,19 @@ public class ResponseWrapper {
 
     /**
      * excel导入其他错误
+     *
      * @return
      */
-    public static ResponseWrapper markExcelOtherError(){
+    public static ResponseWrapper markExcelOtherError() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.EXCEL_OTHERERROR.getCode());
         responseWrapper.setMsg(ResponseCode.EXCEL_OTHERERROR.getMsg());
         return responseWrapper;
     }
 
-
-
     /**
      * 包装ResponseWrapper
+     *
      * @param tag Tag名称
      * @param jsonArray JSON数据
      * @return ResponseWrapper

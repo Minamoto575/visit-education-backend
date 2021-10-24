@@ -5,13 +5,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 
 /**
- * 跳过token验证
+ * @description 跳过token验证
  * @author kuang
+ * @data 2021/10/24
  */
 public @interface PassToken {
     boolean required() default true;

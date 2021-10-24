@@ -9,22 +9,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * excel导入检查的错误封装类
+ * excel导入检查的信息封装类
+ *
  * @author kuang
- * @date 2021/10/22  19:41
+ * @date 2021/10/22 19:41
  */
 @Data
 @Component
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExcelErrorDAO {
-    /**
-     * 错误列表
-     */
+public class ExcelImportDAO {
+    /** 错误列表 */
     private List<String> errorList = new ArrayList<>();
 
+    /** 是否对excel进行检查 */
+    private boolean doCheck = true;
 
-    public void addError(String error){
+    public void addError(String error) {
         errorList.add(error);
+    }
+
+    public boolean doCheck() {
+        return doCheck;
     }
 }
