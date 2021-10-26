@@ -1,7 +1,7 @@
 package cn.krl.visiteducationbackend.controller;
 
 import cn.krl.visiteducationbackend.common.annotation.PassToken;
-import cn.krl.visiteducationbackend.common.listener.RecordDTOListener;
+import cn.krl.visiteducationbackend.common.listener.ExcelReaderListener;
 import cn.krl.visiteducationbackend.common.response.ResponseWrapper;
 import cn.krl.visiteducationbackend.dao.ExcelImportDAO;
 import cn.krl.visiteducationbackend.dto.RecordDTO;
@@ -128,7 +128,7 @@ public class RecordController {
                 EasyExcel.read(
                                 multipartFile.getInputStream(),
                                 RecordDTO.class,
-                                new RecordDTOListener(recordService, excelImportDAO))
+                                new ExcelReaderListener(recordService, excelImportDAO))
                         .sheet(readSheet.getSheetName())
                         .doRead();
             }

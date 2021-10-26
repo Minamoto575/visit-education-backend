@@ -23,7 +23,7 @@ public class ExcelImportDAO {
     private List<String> errorList = new ArrayList<>();
 
     /** 是否对excel进行检查 */
-    private boolean doCheck = true;
+    private boolean doCheck;
 
     public void addError(String error) {
         errorList.add(error);

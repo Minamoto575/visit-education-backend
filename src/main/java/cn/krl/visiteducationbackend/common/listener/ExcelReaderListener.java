@@ -19,7 +19,7 @@ import java.util.List;
  * @author kuang
  * @data 2021/10/24
  */
-public class RecordDTOListener extends AnalysisEventListener<RecordDTO> {
+public class ExcelReaderListener extends AnalysisEventListener<RecordDTO> {
 
     /** 每100条存储数据库，然后清空list 服务器内存小 BATCH_COUNT不能过大 */
     private static final int BATCH_COUNT = 100;
@@ -32,17 +32,12 @@ public class RecordDTOListener extends AnalysisEventListener<RecordDTO> {
 
     private ExcelImportDAO excelImportDAO;
 
-    //    public RecordDTOListener(){
-    //        recordService = new RecordServiceImpl();
-    //        excelErrorDAO = new ExcelErrorDAO();
-    //    }
-
     /**
      * 带参构造导入spring注入的service，可以使用自定义的方法
      *
      * @param recordService
      */
-    public RecordDTOListener(IRecordService recordService, ExcelImportDAO excelImportDAO) {
+    public ExcelReaderListener(IRecordService recordService, ExcelImportDAO excelImportDAO) {
         this.recordService = recordService;
         this.excelImportDAO = excelImportDAO;
     }
@@ -55,6 +50,7 @@ public class RecordDTOListener extends AnalysisEventListener<RecordDTO> {
      */
     @Override
     public void invoke(RecordDTO recordDTO, AnalysisContext analysisContext) {
+        System.out.println(excelImportDAO.doCheck());
         // 检查该记录
         if (excelImportDAO.doCheck()) {
             recordDTO = ExcelCheckUtil.check(recordDTO);
