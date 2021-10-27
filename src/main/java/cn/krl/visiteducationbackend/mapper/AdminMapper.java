@@ -1,6 +1,6 @@
 package cn.krl.visiteducationbackend.mapper;
 
-import cn.krl.visiteducationbackend.entity.Admin;
+import cn.krl.visiteducationbackend.model.vo.Admin;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 

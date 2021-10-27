@@ -1,4 +1,4 @@
-package cn.krl.visiteducationbackend.config;
+package cn.krl.visiteducationbackend.common.config;
 
 import cn.krl.visiteducationbackend.common.interceptor.JwtAuthenticationInterceptor;
 import org.springframework.context.annotation.Bean;

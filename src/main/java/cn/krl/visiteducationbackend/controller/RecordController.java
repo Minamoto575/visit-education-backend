@@ -3,10 +3,11 @@ package cn.krl.visiteducationbackend.controller;
 import cn.krl.visiteducationbackend.common.annotation.PassToken;
 import cn.krl.visiteducationbackend.common.listener.ExcelReaderListener;
 import cn.krl.visiteducationbackend.common.response.ResponseWrapper;
-import cn.krl.visiteducationbackend.dao.ExcelImportDAO;
-import cn.krl.visiteducationbackend.dto.RecordDTO;
-import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
-import cn.krl.visiteducationbackend.entity.Record;
+import cn.krl.visiteducationbackend.model.dao.ExcelImportDAO;
+import cn.krl.visiteducationbackend.model.dto.DeleteDTO;
+import cn.krl.visiteducationbackend.model.dto.RecordDTO;
+import cn.krl.visiteducationbackend.model.dto.RecordQueryDTO;
+import cn.krl.visiteducationbackend.model.vo.Record;
 import cn.krl.visiteducationbackend.service.IRecordService;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.read.metadata.ReadSheet;
@@ -237,6 +238,36 @@ public class RecordController {
             responseWrapper = ResponseWrapper.markSuccess();
             responseWrapper.setExtra("records", records);
             responseWrapper.setExtra("total", total);
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseWrapper = ResponseWrapper.markError();
+        }
+        return responseWrapper;
+    }
+
+    /**
+     * @description 根据项目、学校、学科名称组合批量删除 学科名称可以为空
+     * @param deleteDTO:
+     * @return: cn.krl.visiteducationbackend.common.response.ResponseWrapper
+     * @data 2021/10/27
+     */
+    @PostMapping("/delete/combination")
+    @ApiOperation("根据项目、学校、学科名称组合批量删除")
+    @PassToken
+    public ResponseWrapper deleteRecordsByCombination(@RequestBody DeleteDTO deleteDTO) {
+        ResponseWrapper responseWrapper;
+        if (deleteDTO.getProjectName() == "") {
+            log.error("批量删除输入的项目名称为空");
+            return ResponseWrapper.markDefault(999, "项目名称不能为空");
+        }
+        if (deleteDTO.getSchoolName() == "") {
+            log.error("批量删除输入的学校名称为空");
+            return ResponseWrapper.markDefault(999, "学校名称不能为空");
+        }
+        try {
+            recordService.deleteBatch(deleteDTO);
+            responseWrapper = ResponseWrapper.markSuccess();
+            log.info("批量删除：" + deleteDTO);
         } catch (Exception e) {
             e.printStackTrace();
             responseWrapper = ResponseWrapper.markError();

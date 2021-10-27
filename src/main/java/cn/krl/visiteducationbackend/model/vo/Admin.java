@@ -1,4 +1,4 @@
-package cn.krl.visiteducationbackend.entity;
+package cn.krl.visiteducationbackend.model.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

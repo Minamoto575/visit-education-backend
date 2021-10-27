@@ -1,8 +1,9 @@
 package cn.krl.visiteducationbackend.service;
 
-import cn.krl.visiteducationbackend.dto.RecordDTO;
-import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
-import cn.krl.visiteducationbackend.entity.Record;
+import cn.krl.visiteducationbackend.model.dto.DeleteDTO;
+import cn.krl.visiteducationbackend.model.dto.RecordDTO;
+import cn.krl.visiteducationbackend.model.dto.RecordQueryDTO;
+import cn.krl.visiteducationbackend.model.vo.Record;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -99,4 +100,12 @@ public interface IRecordService extends IService<Record> {
      * @return
      */
     int saveAndReturnId(RecordDTO recordDTO);
+
+    /**
+     * @description 组合条件批量删除
+     * @param deleteDTO:
+     * @return: void
+     * @data 2021/10/27
+     */
+    void deleteBatch(DeleteDTO deleteDTO);
 }

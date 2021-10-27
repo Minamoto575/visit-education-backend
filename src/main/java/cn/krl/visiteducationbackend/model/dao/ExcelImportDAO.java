@@ -1,4 +1,4 @@
-package cn.krl.visiteducationbackend.dao;
+package cn.krl.visiteducationbackend.model.dao;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

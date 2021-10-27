@@ -2,8 +2,12 @@ package cn.krl.visiteducationbackend.common.utils;
 
 import cn.krl.visiteducationbackend.common.enums.ExcelErrorType;
 import cn.krl.visiteducationbackend.common.enums.ProjectType;
-import cn.krl.visiteducationbackend.dto.RecordDTO;
+import cn.krl.visiteducationbackend.model.dto.RecordDTO;
 import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.exception.ExcelAnalysisStopException;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @description Excel导入 检查工具类
@@ -28,25 +32,24 @@ public class ExcelCheckUtil {
         String taskName = recordDTO.getTaskName();
         String subjectCode = recordDTO.getSubjectCode();
 
-        /** 检查是否存在空的数据项 */
+        /** @description 检查是否存在空的数据项 */
         checkEmptyOrNull(recordDTO);
 
-        /** 专业代码不合法 */
+        /** @description 专业代码不合法 */
         if (!codeIsLeage(subjectCode)) {
             throw new ExcelAnalysisException(
                     ExcelErrorType.ILLEGAL_SUBJECTCODE.getType() + ": " + subjectCode);
         }
 
-        /** 课题名称乱码 */
-        //        if(isGB2312(taskName)){
-        //            throw new
-        // ExcelAnalysisStopException(ExcelErrorType.ILLEGAL_TASKNAME.getType()+ ": " + taskName);
-        //        }
+        /** @description 课题名称乱码 */
+        if (isMessyCode(taskName)) {
+            throw new ExcelAnalysisStopException(ExcelErrorType.ILLEGAL_TASKNAME.getType());
+        }
 
-        /** 消除姓名中的空格 */
+        /** @description 消除姓名中的空格 */
         teacherName = teacherName.replace(" ", "");
 
-        /** 青骨项目 导师姓名必须带* 一般项目不带* */
+        /** @description 青骨项目 导师姓名必须带* 一般项目不带* */
         char last = teacherName.charAt(teacherName.length() - 1);
         if (ProjectType.QINGGU_PROJECT.getType().equals(projectName)) {
             if (last != STAR) {
@@ -116,51 +119,56 @@ public class ExcelCheckUtil {
      * @param strName
      * @return
      */
-    //    public static boolean isMessyCode(String strName) {
-    //
-    //        Pattern p = Pattern.compile("\\s*|\t*|\r*|\n*");
-    //        Matcher m = p.matcher(strName);
-    //        String after = m.replaceAll("");
-    //        String temp = after.replaceAll("\\p{P}", "");
-    //        char[] ch = temp.trim().toCharArray();
-    //
-    ////        char[] indexs = {'①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'};
-    //        int length = (ch != null) ? ch.length : 0;
-    //        for (int i = 0; i < length; i++) {
-    //            char c = ch[i];
-    //            //字母、数字、中文放行
-    //            if (!Character.isLetterOrDigit(c)) {
-    //                String str = "" + ch[i];
-    //                String regex =
-    // "[\u4e00-\u9fa5|'①'|'②'|'③'|'④'|'⑤'|'⑥'|'⑦'|'⑧'|'⑨'|'⑩'|'+'|'('|')" +
-    //                    "'|'-'|'（'|'）'|':'|'：'|'  '|'、'|'　'|'\"'|'“'|'”']+";
-    //                if (!str.matches(regex)) {
-    //                    return true;
-    //                }
-    //            }
-    //        }
-    //        return false;
-    //    }
+    public static boolean isMessyCode(String strName) {
+        Pattern p = Pattern.compile("\\s*|\t*|\r*|\n*");
+        Matcher m = p.matcher(strName);
+        String after = m.replaceAll("");
+        String temp = after.replaceAll("\\p{P}", "");
+        char[] ch = temp.trim().toCharArray();
 
-    //    public static boolean isGB2312(String str){
-    //        char[] chars=str.toCharArray();
-    //        boolean isGB2312=false;
-    //        for(int i=0;i<chars.length;i++){
-    //            byte[] bytes=(""+chars[i]).getBytes();
-    //            if(bytes.length==2){
-    //                int[] ints=new int[2];
-    //                ints[0]=bytes[0]& 0xff;
-    //                ints[1]=bytes[1]& 0xff;
-    //                if(ints[0]>=0x81 && ints[0]<=0xFE && ints[1]>=0x40 && ints[1]<=0xFE){
-    //                    isGB2312=true;
-    //                    break;
-    //                }
-    //            }
-    //        }
-    //        return isGB2312;
-    //    }
+        //        char[] indexs = {'①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'};
+        int length = (ch != null) ? ch.length : 0;
+        for (int i = 0; i < length; i++) {
+            char c = ch[i];
+            // 字母、数字、中文放行
+            if (!Character.isLetterOrDigit(c)) {
+                String str = "" + ch[i];
+                String regex =
+                        "[\u4e00-\u9fa5|'①'|'②'|'③'|'④'|'⑤'|'⑥'|'⑦'|'⑧'|'⑨'|'⑩'|'+'|'('|')"
+                                + "'|'-'|'（'|'）'|':'|'：'|'  '|'、'|'　'|'\"'|'“'|'”']+";
+                if (!str.matches(regex)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /**
-     * 检查专业代码的位数是否合法 4、6、8
+     * @description 验证是否是国标字符
+     * @param str:
+     * @return: boolean
+     * @data 2021/10/27
+     */
+    public static boolean isGB2312(String str) {
+        char[] chars = str.toCharArray();
+        boolean isGB2312 = false;
+        for (int i = 0; i < chars.length; i++) {
+            byte[] bytes = ("" + chars[i]).getBytes();
+            if (bytes.length == 2) {
+                int[] ints = new int[2];
+                ints[0] = bytes[0] & 0xff;
+                ints[1] = bytes[1] & 0xff;
+                if (ints[0] >= 0x81 && ints[0] <= 0xFE && ints[1] >= 0x40 && ints[1] <= 0xFE) {
+                    isGB2312 = true;
+                    break;
+                }
+            }
+        }
+        return isGB2312;
+    }
+    /**
+     * 检查专业代码
      *
      * @param subjectCode
      * @return
@@ -172,9 +180,9 @@ public class ExcelCheckUtil {
         for (String code : codes) {
             code = code.replace(" ", "");
             int length = code.length();
-            if (!(length == 4 || length == 5 || length == 6 || length == 8)) {
-                return false;
-            }
+            // if (!(length == 4 || length == 5 || length == 6 || length == 8)) {
+            //     return false;
+            // }
         }
         return true;
     }

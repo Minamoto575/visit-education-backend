@@ -1,6 +1,6 @@
 package cn.krl.visiteducationbackend.shiro.realm;
 
-import cn.krl.visiteducationbackend.entity.Admin;
+import cn.krl.visiteducationbackend.model.vo.Admin;
 import cn.krl.visiteducationbackend.service.IAdminService;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;

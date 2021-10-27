@@ -2,9 +2,9 @@ package cn.krl.visiteducationbackend.service.Impl;
 
 import cn.krl.visiteducationbackend.common.enums.AdminType;
 import cn.krl.visiteducationbackend.common.utils.SaltUtil;
-import cn.krl.visiteducationbackend.dto.AdminQueryDTO;
-import cn.krl.visiteducationbackend.dto.ChangePasswrodDTO;
-import cn.krl.visiteducationbackend.entity.Admin;
+import cn.krl.visiteducationbackend.model.dto.AdminQueryDTO;
+import cn.krl.visiteducationbackend.model.dto.ChangePasswrodDTO;
+import cn.krl.visiteducationbackend.model.vo.Admin;
 import cn.krl.visiteducationbackend.mapper.AdminMapper;
 import cn.krl.visiteducationbackend.service.IAdminService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;

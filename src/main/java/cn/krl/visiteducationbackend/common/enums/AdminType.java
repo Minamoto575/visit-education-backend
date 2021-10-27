@@ -12,6 +12,7 @@ public enum AdminType {
     private Integer code;
     private String type;
 
+
     AdminType(Integer code, String type) {
         this.code = code;
         this.type = type;

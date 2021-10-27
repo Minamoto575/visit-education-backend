@@ -1,4 +1,4 @@
-package cn.krl.visiteducationbackend.dto;
+package cn.krl.visiteducationbackend.model.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

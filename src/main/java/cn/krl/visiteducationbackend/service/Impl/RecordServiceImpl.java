@@ -1,13 +1,15 @@
 package cn.krl.visiteducationbackend.service.Impl;
 
-import cn.krl.visiteducationbackend.dto.RecordDTO;
-import cn.krl.visiteducationbackend.dto.RecordQueryDTO;
-import cn.krl.visiteducationbackend.entity.Record;
 import cn.krl.visiteducationbackend.mapper.RecordMapper;
+import cn.krl.visiteducationbackend.model.dto.DeleteDTO;
+import cn.krl.visiteducationbackend.model.dto.RecordDTO;
+import cn.krl.visiteducationbackend.model.dto.RecordQueryDTO;
+import cn.krl.visiteducationbackend.model.vo.Record;
 import cn.krl.visiteducationbackend.service.IRecordService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import java.util.List;
  * @data 2021/10/24
  */
 @Service
+@Slf4j
 public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> implements IRecordService {
 
     @Autowired private RecordMapper recordMapper;
@@ -133,5 +136,20 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
         recordMapper.insert(record);
         System.out.println(record.getId());
         return record.getId();
+    }
+
+    @Override
+    public void deleteBatch(DeleteDTO deleteDTO) {
+        String projectName = deleteDTO.getProjectName();
+        String schoolName = deleteDTO.getSchoolName();
+        String subjectName = deleteDTO.getSubjectName();
+
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("projectName", projectName);
+        queryWrapper.eq("schoolName", schoolName);
+        if (subjectName != "") {
+            queryWrapper.eq("subjectName", subjectName);
+        }
+        recordMapper.delete(queryWrapper);
     }
 }

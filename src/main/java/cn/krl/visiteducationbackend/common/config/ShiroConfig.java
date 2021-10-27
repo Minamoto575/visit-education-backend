@@ -1,4 +1,4 @@
-package cn.krl.visiteducationbackend.config;
+package cn.krl.visiteducationbackend.common.config;
 
 import cn.krl.visiteducationbackend.shiro.realm.AdminRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;

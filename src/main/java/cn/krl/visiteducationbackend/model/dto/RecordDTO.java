@@ -1,4 +1,4 @@
-package cn.krl.visiteducationbackend.dto;
+package cn.krl.visiteducationbackend.model.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.annotations.ApiModel;

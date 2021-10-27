@@ -1,8 +1,8 @@
 package cn.krl.visiteducationbackend.service;
 
-import cn.krl.visiteducationbackend.dto.AdminQueryDTO;
-import cn.krl.visiteducationbackend.dto.ChangePasswrodDTO;
-import cn.krl.visiteducationbackend.entity.Admin;
+import cn.krl.visiteducationbackend.model.dto.AdminQueryDTO;
+import cn.krl.visiteducationbackend.model.dto.ChangePasswrodDTO;
+import cn.krl.visiteducationbackend.model.vo.Admin;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

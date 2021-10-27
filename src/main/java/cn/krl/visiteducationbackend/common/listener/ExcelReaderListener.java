@@ -1,9 +1,9 @@
 package cn.krl.visiteducationbackend.common.listener;
 
 import cn.krl.visiteducationbackend.common.utils.ExcelCheckUtil;
-import cn.krl.visiteducationbackend.dao.ExcelImportDAO;
-import cn.krl.visiteducationbackend.dto.RecordDTO;
-import cn.krl.visiteducationbackend.entity.Record;
+import cn.krl.visiteducationbackend.model.dao.ExcelImportDAO;
+import cn.krl.visiteducationbackend.model.dto.RecordDTO;
+import cn.krl.visiteducationbackend.model.vo.Record;
 import cn.krl.visiteducationbackend.service.IRecordService;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
@@ -50,7 +50,6 @@ public class ExcelReaderListener extends AnalysisEventListener<RecordDTO> {
      */
     @Override
     public void invoke(RecordDTO recordDTO, AnalysisContext analysisContext) {
-        System.out.println(excelImportDAO.doCheck());
         // 检查该记录
         if (excelImportDAO.doCheck()) {
             recordDTO = ExcelCheckUtil.check(recordDTO);
@@ -97,7 +96,6 @@ public class ExcelReaderListener extends AnalysisEventListener<RecordDTO> {
      */
     @Override
     public void onException(Exception exception, AnalysisContext context) {
-        System.out.println(exception.getMessage());
         // excel解析异常
         if (exception instanceof ExcelAnalysisException) {
             ExcelAnalysisException e = (ExcelAnalysisException) exception;
