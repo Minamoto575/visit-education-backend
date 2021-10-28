@@ -2,12 +2,14 @@ package cn.krl.visiteducationbackend.common.listener;
 
 import cn.krl.visiteducationbackend.common.utils.ExcelCheckUtil;
 import cn.krl.visiteducationbackend.model.dao.ExcelImportDAO;
+import cn.krl.visiteducationbackend.model.dto.ExcelErrorDTO;
 import cn.krl.visiteducationbackend.model.dto.RecordDTO;
 import cn.krl.visiteducationbackend.model.vo.Record;
 import cn.krl.visiteducationbackend.service.IRecordService;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
@@ -101,7 +103,9 @@ public class ExcelReaderListener extends AnalysisEventListener<RecordDTO> {
             ExcelAnalysisException e = (ExcelAnalysisException) exception;
             String sheetName = context.readSheetHolder().getSheetName();
             int rowIndex = context.readRowHolder().getRowIndex();
-            String error = sheetName + ",第" + rowIndex + "条记录:" + e.getMessage();
+            ExcelErrorDTO error = JSON.parseObject(e.getMessage(), ExcelErrorDTO.class);
+            error.setSheetName(sheetName);
+            error.setRowIndex(rowIndex);
             excelImportDAO.addError(error);
         }
     }

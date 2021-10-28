@@ -2,9 +2,12 @@ package cn.krl.visiteducationbackend.common.utils;
 
 import cn.krl.visiteducationbackend.common.enums.ExcelErrorType;
 import cn.krl.visiteducationbackend.common.enums.ProjectType;
+import cn.krl.visiteducationbackend.model.dto.ExcelErrorDTO;
 import cn.krl.visiteducationbackend.model.dto.RecordDTO;
 import com.alibaba.excel.exception.ExcelAnalysisException;
-import com.alibaba.excel.exception.ExcelAnalysisStopException;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import org.springframework.beans.BeanUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,13 +40,14 @@ public class ExcelCheckUtil {
 
         /** @description 专业代码不合法 */
         if (!codeIsLeage(subjectCode)) {
-            throw new ExcelAnalysisException(
-                    ExcelErrorType.ILLEGAL_SUBJECTCODE.getType() + ": " + subjectCode);
+            String error = wrapResult(recordDTO, ExcelErrorType.ILLEGAL_SUBJECTCODE.getType());
+            throw new ExcelAnalysisException(error);
         }
 
         /** @description 课题名称乱码 */
         if (isMessyCode(taskName)) {
-            throw new ExcelAnalysisStopException(ExcelErrorType.ILLEGAL_TASKNAME.getType());
+            String error = wrapResult(recordDTO, ExcelErrorType.ILLEGAL_TASKNAME.getType());
+            throw new ExcelAnalysisException(error);
         }
 
         /** @description 消除姓名中的空格 */
@@ -62,7 +66,8 @@ public class ExcelCheckUtil {
                 teacherName = teacherName.substring(0, teacherName.length() - 1);
             }
         } else {
-            throw new ExcelAnalysisException(ExcelErrorType.ILLEGAL_PROJECTNAME.getType());
+            String error = wrapResult(recordDTO, ExcelErrorType.ILLEGAL_PROJECTNAME.getType());
+            throw new ExcelAnalysisException(error);
         }
 
         recordDTO.setTeacherName(teacherName);
@@ -84,22 +89,28 @@ public class ExcelCheckUtil {
         String taskName = recordDTO.getTaskName();
 
         if (isEmptyOrNull(projectName)) {
-            throw new ExcelAnalysisException(ExcelErrorType.NULL_PROJECTNAME.getType());
+            String error = wrapResult(recordDTO, ExcelErrorType.NULL_PROJECTNAME.getType());
+            throw new ExcelAnalysisException(error);
         }
         if (isEmptyOrNull(teacherName)) {
-            throw new ExcelAnalysisException(ExcelErrorType.NULL_TEACHERNAME.getType());
+            String error = wrapResult(recordDTO, ExcelErrorType.NULL_TEACHERNAME.getType());
+            throw new ExcelAnalysisException(error);
         }
         if (isEmptyOrNull(schoolName)) {
-            throw new ExcelAnalysisException(ExcelErrorType.NULL_SCHOOLNAME.getType());
+            String error = wrapResult(recordDTO, ExcelErrorType.NULL_SCHOOLNAME.getType());
+            throw new ExcelAnalysisException(error);
         }
         if (isEmptyOrNull(subjectCode)) {
-            throw new ExcelAnalysisException(ExcelErrorType.NULL_SUBJECTCODE.getType());
+            String error = wrapResult(recordDTO, ExcelErrorType.NULL_SUBJECTCODE.getType());
+            throw new ExcelAnalysisException(error);
         }
         if (isEmptyOrNull(subjectName)) {
-            throw new ExcelAnalysisException(ExcelErrorType.NULL_SUBJECTNAME.getType());
+            String error = wrapResult(recordDTO, ExcelErrorType.NULL_SUBJECTNAME.getType());
+            throw new ExcelAnalysisException(error);
         }
         if (isEmptyOrNull(taskName)) {
-            throw new ExcelAnalysisException(ExcelErrorType.NULL_TASKNAME.getType());
+            String error = wrapResult(recordDTO, ExcelErrorType.NULL_TASKNAME.getType());
+            throw new ExcelAnalysisException(error);
         }
     }
 
@@ -134,8 +145,10 @@ public class ExcelCheckUtil {
             if (!Character.isLetterOrDigit(c)) {
                 String str = "" + ch[i];
                 String regex =
-                        "[\u4e00-\u9fa5|'①'|'②'|'③'|'④'|'⑤'|'⑥'|'⑦'|'⑧'|'⑨'|'⑩'|'+'|'('|')"
-                                + "'|'-'|'（'|'）'|':'|'：'|'  '|'、'|'　'|'\"'|'“'|'”']+";
+                        "[\u4e00-\u9fa5|①|②|③|④|⑤|⑥|⑦|⑧|⑨|⑩|⑪|⑫|+|(|)|（|）|:|：|"
+                                + " |、|'　'|'\"'|“|”|Ⅰ|Ⅱ|Ⅲ|Ⅳ|Ⅴ|Ⅵ|Ⅶ|Ⅷ|Ⅸ|Ⅹ|Ⅺ|Ⅻ|L|"
+                                + "\uF081|<|>|\uF082|；|—|\u0082|\u0081|\uF083|─|＋|℃|×|-|~|∙|"
+                                + "'\\n'|'\\r'|'\\t']+";
                 if (!str.matches(regex)) {
                     return true;
                 }
@@ -176,14 +189,30 @@ public class ExcelCheckUtil {
     private static boolean codeIsLeage(String subjectCode) {
         subjectCode = subjectCode.trim();
         /** subjectCode 可能是 111111/222222 这种类型 含多个code */
-        String[] codes = subjectCode.split("[/|'\\\\'|;|；|,|，|、|' '|'  '|'   '|'\\n'|'\\r'|'\\t']");
+        String[] codes =
+                subjectCode.split(
+                        "[/|'/\\n'|'\\\\'|;|；|,|，|、|' '|'  '|'   '|'\\n'|'\\r'|'\\t'|'    ']");
         for (String code : codes) {
             code = code.replace(" ", "");
             int length = code.length();
-            // if (!(length == 4 || length == 5 || length == 6 || length == 8)) {
-            //     return false;
-            // }
+            if (length < 4 || length > 8) {
+                return false;
+            }
         }
         return true;
+    }
+
+    /**
+     * @description 封装excel导入错误传输对象 并序列化为字符串
+     * @param recordDTO:
+     * @param errorType:
+     * @return: cn.krl.visiteducationbackend.model.dto.ExcelErrorDTO
+     * @data 2021/10/28
+     */
+    public static String wrapResult(RecordDTO recordDTO, String errorType) {
+        ExcelErrorDTO excelErrorDTO = new ExcelErrorDTO();
+        BeanUtils.copyProperties(recordDTO, excelErrorDTO);
+        excelErrorDTO.setErrorType(errorType);
+        return JSON.toJSONString(excelErrorDTO, SerializerFeature.WriteMapNullValue);
     }
 }

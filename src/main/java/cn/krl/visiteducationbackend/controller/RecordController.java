@@ -5,12 +5,14 @@ import cn.krl.visiteducationbackend.common.listener.ExcelReaderListener;
 import cn.krl.visiteducationbackend.common.response.ResponseWrapper;
 import cn.krl.visiteducationbackend.model.dao.ExcelImportDAO;
 import cn.krl.visiteducationbackend.model.dto.DeleteDTO;
+import cn.krl.visiteducationbackend.model.dto.ExcelErrorDTO;
 import cn.krl.visiteducationbackend.model.dto.RecordDTO;
 import cn.krl.visiteducationbackend.model.dto.RecordQueryDTO;
 import cn.krl.visiteducationbackend.model.vo.Record;
 import cn.krl.visiteducationbackend.service.IRecordService;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -116,6 +118,7 @@ public class RecordController {
             @RequestParam("doCheck") boolean doCheck) {
         ResponseWrapper responseWrapper;
         excelImportDAO.setDoCheck(doCheck);
+        excelImportDAO.clearErrorList();
         try {
             log.info(doCheck == true ? "开始导入excel，并检查" : "开始导入excel，不检查");
             List<ReadSheet> readSheetList =
@@ -139,14 +142,12 @@ public class RecordController {
             // 异常源码中被封装了一次 所以取Cause
             log.error("excel导入系统错误：" + e.getCause().getMessage());
         }
-
-        List<String> errorList = excelImportDAO.getErrorList();
+        List<ExcelErrorDTO> errorList = excelImportDAO.getErrorList();
         if (!errorList.isEmpty()) {
             responseWrapper = ResponseWrapper.markExcelCustomError();
             responseWrapper.setExtra("errors", errorList);
-            log.error("excel导入自定义错误：" + errorList.toString());
+            log.error("excel导入自定义错误：" + JSON.toJSONString(errorList));
         }
-
         return responseWrapper;
     }
 

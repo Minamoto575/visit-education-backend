@@ -1,5 +1,6 @@
 package cn.krl.visiteducationbackend.model.dao;
 
+import cn.krl.visiteducationbackend.model.dto.ExcelErrorDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,16 +21,20 @@ import java.util.List;
 @AllArgsConstructor
 public class ExcelImportDAO {
     /** 错误列表 */
-    private List<String> errorList = new ArrayList<>();
+    private List<ExcelErrorDTO> errorList = new ArrayList<>();
 
     /** 是否对excel进行检查 */
     private boolean doCheck;
 
-    public void addError(String error) {
+    public void addError(ExcelErrorDTO error) {
         errorList.add(error);
     }
 
     public boolean doCheck() {
         return doCheck;
+    }
+
+    public void clearErrorList() {
+        errorList.clear();
     }
 }
