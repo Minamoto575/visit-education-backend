@@ -4,6 +4,7 @@ import cn.krl.visiteducationbackend.common.annotation.PassToken;
 import cn.krl.visiteducationbackend.common.utils.JwtUtil;
 import cn.krl.visiteducationbackend.model.vo.Admin;
 import cn.krl.visiteducationbackend.service.IAdminService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -18,6 +19,7 @@ import java.lang.reflect.Method;
  * @author kuang
  * @data 2021/10/24
  */
+@Slf4j
 public class JwtAuthenticationInterceptor implements HandlerInterceptor {
     @Autowired IAdminService adminService;
 
@@ -52,14 +54,13 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
         else {
             // 执行认证
             if (token == null) {
-                // 这里其实是登录失效,没token了
-                System.out.println("需要登录");
+                log.error("token为空 需要登录");
             }
             // 获取 token 中的 user Name
             String id = JwtUtil.getAudience(token);
             Admin admin = adminService.getById(id);
             if (admin == null) {
-                System.out.println("用户不存在");
+                log.error("token对应的用户不存在");
             }
             // 验证 token
             JwtUtil.verifyToken(token);

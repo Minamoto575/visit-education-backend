@@ -6,15 +6,18 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Calendar;
 import java.util.Date;
 
 /**
- * @description jwt工具 用于token的生成和验证 实际上与shiro的seeionId功能重叠 因为后端先用了shiro 前端模板要求token 所有集成了jwt 而且我也不想
+ * @description jwt工具 用于token的生成和验证 实际上与shiro的seeionId功能重叠 因为后端先用了shiro 前端模板要求token 所有集成了jwt
+ *     而且我也不想改了 token权限验证失败了也不影响功能
  * @author kuang
  * @data 2021/10/24
  */
+@Slf4j
 public class JwtUtil {
     private static String secret = "ILOVEWHU";
 
@@ -28,6 +31,7 @@ public class JwtUtil {
     public static String createToken(String id, String name, String type) {
         Calendar nowTime = Calendar.getInstance();
         nowTime.add(Calendar.MINUTE, 1440);
+        // nowTime.add(Calendar.SECOND, 5);
         Date expiresDate = nowTime.getTime();
         return JWT.create()
                 // 签发对象
@@ -55,7 +59,8 @@ public class JwtUtil {
             verifier.verify(token);
         } catch (Exception e) {
             // 效验失败
-            System.out.println(e);
+            log.error("登录验证token失败");
+            e.printStackTrace();
         }
     }
 
