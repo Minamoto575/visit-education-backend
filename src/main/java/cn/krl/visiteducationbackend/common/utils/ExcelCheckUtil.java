@@ -137,13 +137,13 @@ public class ExcelCheckUtil {
         String temp = after.replaceAll("\\p{P}", "");
         char[] ch = temp.trim().toCharArray();
 
-        //        char[] indexs = {'①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'};
         int length = (ch != null) ? ch.length : 0;
         for (int i = 0; i < length; i++) {
             char c = ch[i];
             // 字母、数字、中文放行
             if (!Character.isLetterOrDigit(c)) {
                 String str = "" + ch[i];
+                // 数据中可能出现的 不影响展示的字符 不应该认定为乱码
                 String regex =
                         "[\u4e00-\u9fa5|①|②|③|④|⑤|⑥|⑦|⑧|⑨|⑩|⑪|⑫|+|(|)|（|）|:|：|"
                                 + " |、|'　'|'\"'|“|”|Ⅰ|Ⅱ|Ⅲ|Ⅳ|Ⅴ|Ⅵ|Ⅶ|Ⅷ|Ⅸ|Ⅹ|Ⅺ|Ⅻ|L|"

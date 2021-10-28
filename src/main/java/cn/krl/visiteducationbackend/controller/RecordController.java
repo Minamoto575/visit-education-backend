@@ -52,6 +52,7 @@ public class RecordController {
         ResponseWrapper responseWrapper;
         if (recordService.removeById(id)) {
             responseWrapper = ResponseWrapper.markSuccess();
+            log.info("删除记录：Id=" + id);
         } else {
             responseWrapper = ResponseWrapper.markParamError();
         }
@@ -75,6 +76,7 @@ public class RecordController {
         record.setGmtModified(System.currentTimeMillis());
         if (recordService.updateById(record)) {
             responseWrapper = ResponseWrapper.markSuccess();
+            log.info("更新记录：" + recordDTO);
         } else {
             responseWrapper = ResponseWrapper.markParamError();
         }
@@ -95,6 +97,7 @@ public class RecordController {
         ResponseWrapper responseWrapper;
         if (recordService.exist(recordDTO)) {
             responseWrapper = ResponseWrapper.markDataExisted();
+            log.info("新增记录" + recordDTO);
         } else {
             int id = recordService.saveAndReturnId(recordDTO);
             responseWrapper = ResponseWrapper.markSuccess();
@@ -232,6 +235,10 @@ public class RecordController {
     @ApiOperation("根据项目、学校、学科名称组合查询")
     @PassToken
     public ResponseWrapper listRecordsByCombination(@RequestBody RecordQueryDTO queryDTO) {
+        if (queryDTO.getProjectName() == "") {
+            log.error("组合查询项目名称不能为空");
+            return ResponseWrapper.markDefault(999, "组合查询项目名称不能为空");
+        }
         ResponseWrapper responseWrapper;
         try {
             List<Record> records = recordService.listRecordsByCombination(queryDTO);
@@ -247,7 +254,7 @@ public class RecordController {
     }
 
     /**
-     * @description 根据项目、学校、学科名称组合批量删除 学科名称可以为空
+     * @description 根据项目、学校、学科名称组合批量删除 学校、学科名称可以为空
      * @param deleteDTO:
      * @return: cn.krl.visiteducationbackend.common.response.ResponseWrapper
      * @data 2021/10/27
@@ -260,10 +267,6 @@ public class RecordController {
         if (deleteDTO.getProjectName() == "") {
             log.error("批量删除输入的项目名称为空");
             return ResponseWrapper.markDefault(999, "项目名称不能为空");
-        }
-        if (deleteDTO.getSchoolName() == "") {
-            log.error("批量删除输入的学校名称为空");
-            return ResponseWrapper.markDefault(999, "学校名称不能为空");
         }
         try {
             recordService.deleteBatch(deleteDTO);

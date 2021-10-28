@@ -29,11 +29,19 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
 
     @Override
     public List<Record> listRecordsByCombination(RecordQueryDTO recordQueryDTO) {
+
+        String projectName = recordQueryDTO.getProjectName();
+        String schoolName = recordQueryDTO.getSchoolName();
+        String subjectName = recordQueryDTO.getSubjectName();
         QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("projectName", projectName);
+        if (schoolName != "") {
+            queryWrapper.eq("schoolName", schoolName);
+        }
+        if (subjectName != "") {
+            queryWrapper.eq("subjectName", subjectName);
+        }
         Page page = new Page();
-        queryWrapper.eq("projectName", recordQueryDTO.getProjectName());
-        queryWrapper.eq("schoolName", recordQueryDTO.getSchoolName());
-        queryWrapper.eq("subjectName", recordQueryDTO.getSubjectName());
         page.setCurrent(recordQueryDTO.getPage());
         page.setSize(recordQueryDTO.getLimit());
         List<Record> records = recordMapper.selectPage(page, queryWrapper).getRecords();
@@ -42,10 +50,18 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
 
     @Override
     public int countByCombination(RecordQueryDTO recordQueryDTO) {
+        String projectName = recordQueryDTO.getProjectName();
+        String schoolName = recordQueryDTO.getSchoolName();
+        String subjectName = recordQueryDTO.getSubjectName();
+
         QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("projectName", recordQueryDTO.getProjectName());
-        queryWrapper.eq("schoolName", recordQueryDTO.getSchoolName());
-        queryWrapper.eq("subjectName", recordQueryDTO.getSubjectName());
+        queryWrapper.eq("projectName", projectName);
+        if (schoolName != "") {
+            queryWrapper.eq("schoolName", schoolName);
+        }
+        if (subjectName != "") {
+            queryWrapper.eq("subjectName", subjectName);
+        }
         return recordMapper.selectList(queryWrapper).size();
     }
 
@@ -146,7 +162,9 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
 
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("projectName", projectName);
-        queryWrapper.eq("schoolName", schoolName);
+        if (schoolName != "") {
+            queryWrapper.eq("schoolName", schoolName);
+        }
         if (subjectName != "") {
             queryWrapper.eq("subjectName", subjectName);
         }
