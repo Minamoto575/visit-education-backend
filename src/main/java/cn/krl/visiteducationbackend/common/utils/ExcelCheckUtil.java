@@ -38,10 +38,14 @@ public class ExcelCheckUtil {
         /** @description 检查是否存在空的数据项 */
         checkEmptyOrNull(recordDTO);
 
-        /** @description 专业代码不合法 */
-        if (!codeIsLeage(subjectCode)) {
+        /** @description 拆分专业代码，为空则不合法，合法则统一格式 */
+        String checkedCode = checkCode(subjectCode);
+        if (checkedCode.isEmpty()) {
             String error = wrapResult(recordDTO, ExcelErrorType.ILLEGAL_SUBJECTCODE.getType());
             throw new ExcelAnalysisException(error);
+        } else {
+            // 统一代码格式 code1+" "+ code2
+            subjectCode = checkedCode;
         }
 
         /** @description 课题名称乱码 */
@@ -71,6 +75,7 @@ public class ExcelCheckUtil {
         }
 
         recordDTO.setTeacherName(teacherName);
+        recordDTO.setSubjectCode(subjectCode);
         return recordDTO;
     }
 
@@ -181,25 +186,31 @@ public class ExcelCheckUtil {
         return isGB2312;
     }
     /**
-     * 检查专业代码
+     * 检查专业代码 合法则拆分并返回统一格式 不合法则返回空字符串 4-8位的代码为合法
      *
      * @param subjectCode
      * @return
      */
-    private static boolean codeIsLeage(String subjectCode) {
+    private static String checkCode(String subjectCode) {
+        StringBuffer sb = new StringBuffer();
         subjectCode = subjectCode.trim();
         /** subjectCode 可能是 111111/222222 这种类型 含多个code */
         String[] codes =
-                subjectCode.split(
-                        "[/|'/\\n'|'\\\\'|;|；|,|，|、|' '|'  '|'   '|'\\n'|'\\r'|'\\t'|'    ']");
-        for (String code : codes) {
-            code = code.replace(" ", "");
+                subjectCode.split("[/|'/\\n'|'\\\\'|;|；|,|，|、|'\\s'|||'\\n'|'\\r'|'\\t'|]+");
+
+        for (int i = 0; i < codes.length; i++) {
+            String code = codes[i].replace(" ", "");
             int length = code.length();
+            // 不合法返回空字符串串
             if (length < 4 || length > 8) {
-                return false;
+                return "";
+            }
+            sb.append(code);
+            if (i != codes.length - 1) {
+                sb.append(" ");
             }
         }
-        return true;
+        return sb.toString();
     }
 
     /**
