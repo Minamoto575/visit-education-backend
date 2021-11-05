@@ -8,6 +8,8 @@ shiro也可以产生token 不需要用到jwt
 
 实际上shiro给前端一个sessionId jwt给前端一个token
 
+前端代码：https://github.com/Minamoto575/visit-education-backend
+
 **项目部署**
 
 用到idea上的插件docker链接服务器上的docker
