@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * @author kuang
  * @description 存在问题的记录传输对象
@@ -15,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExcelErrorDTO {
+public class ExcelErrorDTO implements Serializable{
 
     @ApiModelProperty(name = "sheetName", value = "sheet名称", dataType = "String")
     private String sheetName;

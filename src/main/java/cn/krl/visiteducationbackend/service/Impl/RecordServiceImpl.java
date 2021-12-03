@@ -1,18 +1,25 @@
 package cn.krl.visiteducationbackend.service.Impl;
 
+import cn.krl.visiteducationbackend.common.listener.ExcelReaderListener;
 import cn.krl.visiteducationbackend.mapper.RecordMapper;
+import cn.krl.visiteducationbackend.model.dao.ExcelImportDAO;
 import cn.krl.visiteducationbackend.model.dto.DeleteDTO;
+import cn.krl.visiteducationbackend.model.dto.ExcelErrorDTO;
 import cn.krl.visiteducationbackend.model.dto.RecordDTO;
 import cn.krl.visiteducationbackend.model.dto.RecordQueryDTO;
 import cn.krl.visiteducationbackend.model.vo.Record;
 import cn.krl.visiteducationbackend.service.IRecordService;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.read.metadata.ReadSheet;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -170,4 +177,5 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
         }
         recordMapper.delete(queryWrapper);
     }
+
 }

@@ -5,6 +5,7 @@ import cn.krl.visiteducationbackend.model.dto.RecordDTO;
 import cn.krl.visiteducationbackend.model.dto.RecordQueryDTO;
 import cn.krl.visiteducationbackend.model.vo.Record;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -108,4 +109,5 @@ public interface IRecordService extends IService<Record> {
      * @data 2021/10/27
      */
     void deleteBatch(DeleteDTO deleteDTO);
+
 }

@@ -1,8 +1,9 @@
 package cn.krl.visiteducationbackend.controller;
 
 import cn.krl.visiteducationbackend.common.annotation.PassToken;
-import cn.krl.visiteducationbackend.common.listener.ExcelReaderListener;
 import cn.krl.visiteducationbackend.common.response.ResponseWrapper;
+import cn.krl.visiteducationbackend.common.utils.EasyExcelUtil;
+import cn.krl.visiteducationbackend.common.utils.RedisUtil;
 import cn.krl.visiteducationbackend.model.dao.ExcelImportDAO;
 import cn.krl.visiteducationbackend.model.dto.DeleteDTO;
 import cn.krl.visiteducationbackend.model.dto.ExcelErrorDTO;
@@ -10,14 +11,14 @@ import cn.krl.visiteducationbackend.model.dto.RecordDTO;
 import cn.krl.visiteducationbackend.model.dto.RecordQueryDTO;
 import cn.krl.visiteducationbackend.model.vo.Record;
 import cn.krl.visiteducationbackend.service.IRecordService;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.read.metadata.ReadSheet;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,24 +26,36 @@ import javax.validation.Valid;
 import java.util.List;
 
 /**
- * @description 记录控制器，token的产生与验证由jwt控制，放在参数中是为了用swagger测试，控制器中不对token做校验
  * @author kuang
+ * @description 记录控制器，token的产生与验证由jwt控制，放在参数中是为了用swagger测试，控制器中不对token做校验
  * @data 2021/10/24
  */
 @RestController
 @Api(tags = "记录的api")
 @RequestMapping("/record")
 @Slf4j
+@EnableAsync
 public class RecordController {
 
-    @Autowired private IRecordService recordService;
+    @Autowired
+    private IRecordService recordService;
 
-    @Autowired private ExcelImportDAO excelImportDAO;
+    @Autowired
+    private ExcelImportDAO excelImportDAO;
+
+    @Autowired
+    private EasyExcelUtil easyExcelUtil;
+
+    @Autowired
+    private RedisUtil redisUtil;
+
+    private MultipartFile tempFile;
+
 
     /**
      * 删除一条记录
      *
-     * @param id 删除的id
+     * @param id    删除的id
      * @param token
      * @return
      */
@@ -69,7 +82,7 @@ public class RecordController {
     @PutMapping("/update")
     @ApiOperation("更新一条记录")
     public ResponseWrapper update(
-            @RequestBody @Valid RecordDTO recordDTO, @RequestHeader("token") String token) {
+        @RequestBody @Valid RecordDTO recordDTO, @RequestHeader("token") String token) {
         ResponseWrapper responseWrapper;
         Record record = new Record();
         BeanUtils.copyProperties(recordDTO, record);
@@ -93,7 +106,7 @@ public class RecordController {
     @PostMapping("/post")
     @ApiOperation("增加一条记录")
     public ResponseWrapper post(
-            @RequestBody @Valid RecordDTO recordDTO, @RequestHeader("token") String token) {
+        @RequestBody @Valid RecordDTO recordDTO, @RequestHeader("token") String token) {
         ResponseWrapper responseWrapper;
         if (recordService.exist(recordDTO)) {
             responseWrapper = ResponseWrapper.markDataExisted();
@@ -109,47 +122,54 @@ public class RecordController {
     /**
      * 通过Excel批量导入记录
      *
-     * @param multipartFile 输入的excel文件
+     * @param multipartFile 输入的excel文件  收到后提示开始上传，返回一个时间戳代表对应的excel。
      * @param token
      * @return
      */
+    @SneakyThrows
     @PostMapping("/upload/excel")
     @ApiOperation("excel批量导入记录")
     public ResponseWrapper postByExcel(
-            @RequestPart("file") MultipartFile multipartFile,
-            @RequestHeader("token") String token,
-            @RequestParam("doCheck") boolean doCheck) {
+        @RequestPart("file") MultipartFile multipartFile,
+        @RequestHeader("token") String token,
+        @RequestParam("doCheck") boolean doCheck) {
         ResponseWrapper responseWrapper;
-        excelImportDAO.setDoCheck(doCheck);
-        excelImportDAO.clearErrorList();
-        try {
-            log.info(doCheck == true ? "开始导入excel，并检查" : "开始导入excel，不检查");
-            List<ReadSheet> readSheetList =
-                    EasyExcel.read(multipartFile.getInputStream())
-                            .build()
-                            .excelExecutor()
-                            .sheetList();
-            // 读每个sheet
-            for (ReadSheet readSheet : readSheetList) {
-                // 对excel进行读取，在listener.RecordDTOLister被监听
-                EasyExcel.read(
-                                multipartFile.getInputStream(),
-                                RecordDTO.class,
-                                new ExcelReaderListener(recordService, excelImportDAO))
-                        .sheet(readSheet.getSheetName())
-                        .doRead();
+        String fileName = System.currentTimeMillis() + multipartFile.getOriginalFilename();
+        responseWrapper = ResponseWrapper.markSuccess();
+        responseWrapper.setExtra("fileName", fileName);
+        log.info(doCheck ? "开始导入excel，并检查" : "开始导入excel，不检查");
+        tempFile = multipartFile;
+        easyExcelUtil.readExcel(fileName, doCheck, multipartFile.getInputStream());
+        // 等异步进程读取Multifile再关闭该进程
+        Thread.sleep(1000);
+        return responseWrapper;
+    }
+
+    /**
+     * @description: 查询上传是否完成
+     * @param: gmt
+     * @author kuang
+     * @date: 2021/12/2
+     */
+    @GetMapping("/upload/excel/result")
+    @ApiOperation("Excel处理的轮询接口")
+    public ResponseWrapper getUploadResult(@RequestParam String fileName) {
+        ResponseWrapper responseWrapper;
+        //完成了
+        if (redisUtil.hasKey(fileName)) {
+            String jsonStr = (String) redisUtil.get(fileName);
+            List<ExcelErrorDTO> errors = JSONObject.parseArray(jsonStr, ExcelErrorDTO.class);
+            if (errors.isEmpty()) {
+                //没有错误的记录
+                responseWrapper = ResponseWrapper.markNoData();
+            } else {
+                //有错误的记录
+                responseWrapper = ResponseWrapper.markSuccess();
+                responseWrapper.setExtra("errors", errors);
             }
-            responseWrapper = ResponseWrapper.markSuccess();
-        } catch (Exception e) {
-            responseWrapper = ResponseWrapper.markExcelOtherError();
-            // 异常源码中被封装了一次 所以取Cause
-            log.error("excel导入系统错误：" + e.getCause().getMessage());
-        }
-        List<ExcelErrorDTO> errorList = excelImportDAO.getErrorList();
-        if (!errorList.isEmpty()) {
-            responseWrapper = ResponseWrapper.markExcelCustomError();
-            responseWrapper.setExtra("errors", errorList);
-            log.error("excel导入自定义错误：" + JSON.toJSONString(errorList));
+        } else {
+            //没完成
+            responseWrapper = ResponseWrapper.markError();
         }
         return responseWrapper;
     }
@@ -254,8 +274,8 @@ public class RecordController {
     }
 
     /**
-     * @description 根据项目、学校、学科名称组合批量删除 学校、学科名称可以为空
      * @param deleteDTO:
+     * @description 根据项目、学校、学科名称组合批量删除 学校、学科名称可以为空
      * @return: cn.krl.visiteducationbackend.common.response.ResponseWrapper
      * @data 2021/10/27
      */
@@ -312,7 +332,7 @@ public class RecordController {
     @PostMapping("/search/all")
     @ApiOperation("获取所有记录")
     public ResponseWrapper listAll(
-            @RequestBody RecordQueryDTO queryDTO, @RequestHeader("token") String token) {
+        @RequestBody RecordQueryDTO queryDTO, @RequestHeader("token") String token) {
         ResponseWrapper responseWrapper;
         try {
             List<Record> records = recordService.listAll(queryDTO);
@@ -325,4 +345,6 @@ public class RecordController {
         }
         return responseWrapper;
     }
+
+
 }

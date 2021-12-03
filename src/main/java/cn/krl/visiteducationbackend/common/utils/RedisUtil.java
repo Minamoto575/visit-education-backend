@@ -1,4 +1,4 @@
-package cn.krl.authplatformserver.common.utils;
+package cn.krl.visiteducationbackend.common.utils;
 
 /**
  * @author kuang
@@ -10,8 +10,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -117,9 +119,33 @@ public class RedisUtil {
         }
     }
 
+    /**
+     * @description: 删除
+     * @param: key
+     * @author kuang
+     * @date: 2021/12/3
+     */
     public boolean delete(String key) {
         try {
             return redisTemplate.delete(key);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * @description: 存文件
+     * @param: key
+     * @param: file
+     * @author kuang
+     * @date: 2021/12/3
+     */
+    public  boolean setFile(String key, MultipartFile file) {
+        try {
+            String str = new String(file.getBytes());
+            redisTemplate.opsForValue().set(key,str);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
