@@ -12,22 +12,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @description shiro配置类
  * @author kuang
+ * @description shiro配置类
  * @data 2021/10/24
  */
 @Configuration
 public class ShiroConfig {
     /**
-     * @description ShiroFilter过滤所有请求
      * @param securityManager: 安全管理器
+     * @description ShiroFilter过滤所有请求
      * @return: org.apache.shiro.spring.web.ShiroFilterFactoryBean
      * @author kuang
      * @data 2021/10/24 21:21
      */
     @Bean
     public ShiroFilterFactoryBean getShiroFilterFactoryBean(
-            DefaultWebSecurityManager securityManager) {
+        DefaultWebSecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         // 给ShiroFilter配置安全管理器
         shiroFilterFactoryBean.setSecurityManager(securityManager);
@@ -37,6 +37,7 @@ public class ShiroConfig {
         // 表示这个为公共资源 一定是在受限资源上面
         map.put("/admin/login", "anon");
         map.put("/record/search", "anon");
+        map.put("/notice/getLatest", "anon");
 
         // 表示这个受限资源需要认证和授权
         map.put("/admin/logout", "authc");
@@ -54,8 +55,8 @@ public class ShiroConfig {
     }
 
     /**
-     * @description 创建安全管理器
      * @param realm:
+     * @description 创建安全管理器
      * @return: org.apache.shiro.web.mgt.DefaultWebSecurityManager
      * @author kuang
      * @data 2021/10/24 21:19
