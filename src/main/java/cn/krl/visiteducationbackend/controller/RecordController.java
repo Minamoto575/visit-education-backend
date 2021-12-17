@@ -25,8 +25,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 /**
- * @description 记录控制器，token的产生与验证由jwt控制，放在参数中是为了用swagger测试，控制器中不对token做校验
  * @author kuang
+ * @description 记录控制器，token的产生与验证由jwt控制，放在参数中是为了用swagger测试，控制器中不对token做校验
  * @data 2021/10/24
  */
 @RestController
@@ -35,18 +35,20 @@ import java.util.List;
 @Slf4j
 public class RecordController {
 
-    @Autowired private IRecordService recordService;
+    @Autowired
+    private IRecordService recordService;
 
-    @Autowired private ExcelImportDAO excelImportDAO;
+    @Autowired
+    private ExcelImportDAO excelImportDAO;
 
     /**
      * 删除一条记录
      *
-     * @param id 删除的id
+     * @param id    删除的id
      * @param token
      * @return
      */
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @ApiOperation("删除一条记录")
     public ResponseWrapper delete(@RequestParam Integer id, @RequestHeader("token") String token) {
         ResponseWrapper responseWrapper;
@@ -66,10 +68,10 @@ public class RecordController {
      * @param token
      * @return
      */
-    @PutMapping("/update")
+    @PostMapping("/update")
     @ApiOperation("更新一条记录")
     public ResponseWrapper update(
-            @RequestBody @Valid RecordDTO recordDTO, @RequestHeader("token") String token) {
+        @RequestBody @Valid RecordDTO recordDTO, @RequestHeader("token") String token) {
         ResponseWrapper responseWrapper;
         Record record = new Record();
         BeanUtils.copyProperties(recordDTO, record);
@@ -93,7 +95,7 @@ public class RecordController {
     @PostMapping("/post")
     @ApiOperation("增加一条记录")
     public ResponseWrapper post(
-            @RequestBody @Valid RecordDTO recordDTO, @RequestHeader("token") String token) {
+        @RequestBody @Valid RecordDTO recordDTO, @RequestHeader("token") String token) {
         ResponseWrapper responseWrapper;
         if (recordService.exist(recordDTO)) {
             responseWrapper = ResponseWrapper.markDataExisted();
@@ -116,28 +118,28 @@ public class RecordController {
     @PostMapping("/upload/excel")
     @ApiOperation("excel批量导入记录")
     public ResponseWrapper postByExcel(
-            @RequestPart("file") MultipartFile multipartFile,
-            @RequestHeader("token") String token,
-            @RequestParam("doCheck") boolean doCheck) {
+        @RequestPart("file") MultipartFile multipartFile,
+        @RequestHeader("token") String token,
+        @RequestParam("doCheck") boolean doCheck) {
         ResponseWrapper responseWrapper;
         excelImportDAO.setDoCheck(doCheck);
         excelImportDAO.clearErrorList();
         try {
             log.info(doCheck == true ? "开始导入excel，并检查" : "开始导入excel，不检查");
             List<ReadSheet> readSheetList =
-                    EasyExcel.read(multipartFile.getInputStream())
-                            .build()
-                            .excelExecutor()
-                            .sheetList();
+                EasyExcel.read(multipartFile.getInputStream())
+                    .build()
+                    .excelExecutor()
+                    .sheetList();
             // 读每个sheet
             for (ReadSheet readSheet : readSheetList) {
                 // 对excel进行读取，在listener.RecordDTOLister被监听
                 EasyExcel.read(
-                                multipartFile.getInputStream(),
-                                RecordDTO.class,
-                                new ExcelReaderListener(recordService, excelImportDAO))
-                        .sheet(readSheet.getSheetName())
-                        .doRead();
+                        multipartFile.getInputStream(),
+                        RecordDTO.class,
+                        new ExcelReaderListener(recordService, excelImportDAO))
+                    .sheet(readSheet.getSheetName())
+                    .doRead();
             }
             responseWrapper = ResponseWrapper.markSuccess();
         } catch (Exception e) {
@@ -254,8 +256,8 @@ public class RecordController {
     }
 
     /**
-     * @description 根据项目、学校、学科名称组合批量删除 学校、学科名称可以为空
      * @param deleteDTO:
+     * @description 根据项目、学校、学科名称组合批量删除 学校、学科名称可以为空
      * @return: cn.krl.visiteducationbackend.common.response.ResponseWrapper
      * @data 2021/10/27
      */
@@ -312,7 +314,7 @@ public class RecordController {
     @PostMapping("/search/all")
     @ApiOperation("获取所有记录")
     public ResponseWrapper listAll(
-            @RequestBody RecordQueryDTO queryDTO, @RequestHeader("token") String token) {
+        @RequestBody RecordQueryDTO queryDTO, @RequestHeader("token") String token) {
         ResponseWrapper responseWrapper;
         try {
             List<Record> records = recordService.listAll(queryDTO);

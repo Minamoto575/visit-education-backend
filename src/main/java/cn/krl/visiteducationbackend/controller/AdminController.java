@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * @description 管理员控制器
  * @author kuang
+ * @description 管理员控制器
  * @data 2021/10/24
  */
 @RestController
@@ -33,7 +33,8 @@ import java.util.List;
 @Slf4j
 public class AdminController {
 
-    @Autowired private IAdminService adminService;
+    @Autowired
+    private IAdminService adminService;
 
     /**
      * 管理员登录
@@ -56,7 +57,7 @@ public class AdminController {
         try {
             subject.login(new UsernamePasswordToken(name, password));
             String token =
-                    JwtUtil.createToken(Integer.toString(admin.getId()), name, admin.getType());
+                JwtUtil.createToken(Integer.toString(admin.getId()), name, admin.getType());
             responseWrapper = ResponseWrapper.markSuccess();
             responseWrapper.setExtra("id", admin.getId());
             responseWrapper.setExtra("name", name);
@@ -84,7 +85,7 @@ public class AdminController {
     @PostMapping("/register")
     @ApiOperation("管理员注册")
     public ResponseWrapper register(
-            @RequestBody AdminDTO adminDTO, @RequestHeader("token") String token) {
+        @RequestBody AdminDTO adminDTO, @RequestHeader("token") String token) {
         ResponseWrapper responseWrapper;
         String type = JwtUtil.getClaimByName(token, "type").asString();
 
@@ -145,8 +146,8 @@ public class AdminController {
     @PostMapping("/changePassword")
     @ApiOperation("修改密码")
     public ResponseWrapper changePassword(
-            @RequestBody ChangePasswrodDTO changePasswrodDTO,
-            @RequestHeader("token") String token) {
+        @RequestBody ChangePasswrodDTO changePasswrodDTO,
+        @RequestHeader("token") String token) {
 
         ResponseWrapper responseWrapper;
         int id = Integer.parseInt(JwtUtil.getAudience(token));
@@ -158,8 +159,8 @@ public class AdminController {
         if (AdminType.SUPER_ADMIN.getType().equals(type)) {
             // 超级管理员：普通管理员直接修改  其他超管不能修改  自己验证后修改
             isOK =
-                    !adminService.isSuper(targetId)
-                            || (id == targetId && adminService.testPassword(changePasswrodDTO));
+                !adminService.isSuper(targetId)
+                    || (id == targetId && adminService.testPassword(changePasswrodDTO));
         } else {
             // 普通管理员：自己验证后修改
             isOK = adminService.testPassword(changePasswrodDTO) && (id == targetId);
@@ -186,10 +187,10 @@ public class AdminController {
      * @param token
      * @return
      */
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @ApiOperation("删除管理员")
     public ResponseWrapper delete(
-            @RequestParam Integer deleteId, @RequestHeader("token") String token) {
+        @RequestParam Integer deleteId, @RequestHeader("token") String token) {
 
         ResponseWrapper responseWrapper;
         int id = Integer.parseInt(JwtUtil.getAudience(token));
