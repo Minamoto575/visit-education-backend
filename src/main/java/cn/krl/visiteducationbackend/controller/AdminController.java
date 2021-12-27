@@ -47,6 +47,10 @@ public class AdminController {
         String name = adminDTO.getName();
         String password = adminDTO.getPassword();
         Admin admin = adminService.getByName(name);
+        if (admin == null) {
+            log.error("用户不存在");
+            return ResponseWrapper.markAccountError();
+        }
         int id = admin.getId();
         if (adminService.checkPassword(id, password)) {
             StpUtil.login(id);
