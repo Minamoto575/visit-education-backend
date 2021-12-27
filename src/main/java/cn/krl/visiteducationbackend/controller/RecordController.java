@@ -1,6 +1,7 @@
 package cn.krl.visiteducationbackend.controller;
 
-import cn.krl.visiteducationbackend.common.annotation.PassToken;
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.krl.visiteducationbackend.common.listener.ExcelReaderListener;
 import cn.krl.visiteducationbackend.common.response.ResponseWrapper;
 import cn.krl.visiteducationbackend.model.dao.ExcelImportDAO;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author kuang
@@ -34,6 +36,8 @@ import java.util.List;
 @RequestMapping("/record")
 @Slf4j
 public class RecordController {
+    private final String SUPER = "super";
+    private final String COMMON = "common";
 
     @Autowired
     private IRecordService recordService;
@@ -44,13 +48,15 @@ public class RecordController {
     /**
      * 删除一条记录
      *
-     * @param id    删除的id
-     * @param token
+     * @param id 删除的id
      * @return
      */
+    @SaCheckRole(
+        value = {SUPER, COMMON},
+        mode = SaMode.OR)
     @PostMapping("/delete")
     @ApiOperation("删除一条记录")
-    public ResponseWrapper delete(@RequestParam Integer id, @RequestHeader("token") String token) {
+    public ResponseWrapper delete(@RequestParam Integer id) {
         ResponseWrapper responseWrapper;
         if (recordService.removeById(id)) {
             responseWrapper = ResponseWrapper.markSuccess();
@@ -65,13 +71,15 @@ public class RecordController {
      * 更新一条记录
      *
      * @param recordDTO 记录传输对象
-     * @param token
      * @return
      */
+    @SaCheckRole(
+        value = {SUPER, COMMON},
+        mode = SaMode.OR)
     @PostMapping("/update")
     @ApiOperation("更新一条记录")
     public ResponseWrapper update(
-        @RequestBody @Valid RecordDTO recordDTO, @RequestHeader("token") String token) {
+        @RequestBody @Valid RecordDTO recordDTO) {
         ResponseWrapper responseWrapper;
         Record record = new Record();
         BeanUtils.copyProperties(recordDTO, record);
@@ -89,13 +97,14 @@ public class RecordController {
      * 增加一条记录
      *
      * @param recordDTO 被增加的记录
-     * @param token
      * @return
      */
+    @SaCheckRole(
+        value = {SUPER, COMMON},
+        mode = SaMode.OR)
     @PostMapping("/post")
     @ApiOperation("增加一条记录")
-    public ResponseWrapper post(
-        @RequestBody @Valid RecordDTO recordDTO, @RequestHeader("token") String token) {
+    public ResponseWrapper post(@RequestBody @Valid RecordDTO recordDTO) {
         ResponseWrapper responseWrapper;
         if (recordService.exist(recordDTO)) {
             responseWrapper = ResponseWrapper.markDataExisted();
@@ -112,20 +121,21 @@ public class RecordController {
      * 通过Excel批量导入记录
      *
      * @param multipartFile 输入的excel文件
-     * @param token
      * @return
      */
+    @SaCheckRole(
+        value = {SUPER, COMMON},
+        mode = SaMode.OR)
     @PostMapping("/upload/excel")
     @ApiOperation("excel批量导入记录")
     public ResponseWrapper postByExcel(
         @RequestPart("file") MultipartFile multipartFile,
-        @RequestHeader("token") String token,
         @RequestParam("doCheck") boolean doCheck) {
         ResponseWrapper responseWrapper;
         excelImportDAO.setDoCheck(doCheck);
         excelImportDAO.clearErrorList();
         try {
-            log.info(doCheck == true ? "开始导入excel，并检查" : "开始导入excel，不检查");
+            log.info(doCheck ? "开始导入excel，并检查" : "开始导入excel，不检查");
             List<ReadSheet> readSheetList =
                 EasyExcel.read(multipartFile.getInputStream())
                     .build()
@@ -163,7 +173,6 @@ public class RecordController {
      */
     @GetMapping("/search/project")
     @ApiOperation("获取所有项目的列表")
-    @PassToken
     public ResponseWrapper listProject() {
         ResponseWrapper responseWrapper;
         try {
@@ -186,7 +195,6 @@ public class RecordController {
      */
     @PostMapping(value = "/search/school")
     @ApiOperation("根据项目获取学校列表")
-    @PassToken
     public ResponseWrapper listSchoolByProject(@RequestBody RecordQueryDTO queryDTO) {
         String project = queryDTO.getProjectName();
         ResponseWrapper responseWrapper;
@@ -210,7 +218,6 @@ public class RecordController {
      */
     @PostMapping("/search/subject")
     @ApiOperation("根据项目与学校获取学科列表")
-    @PassToken
     public ResponseWrapper listSchoolByProjectAndSchool(@RequestBody RecordQueryDTO queryDTO) {
         String project = queryDTO.getProjectName();
         String school = queryDTO.getSchoolName();
@@ -235,7 +242,6 @@ public class RecordController {
      */
     @PostMapping("/search/combination")
     @ApiOperation("根据项目、学校、学科名称组合查询")
-    @PassToken
     public ResponseWrapper listRecordsByCombination(@RequestBody RecordQueryDTO queryDTO) {
         if (queryDTO.getProjectName() == "") {
             log.error("组合查询项目名称不能为空");
@@ -261,12 +267,14 @@ public class RecordController {
      * @return: cn.krl.visiteducationbackend.common.response.ResponseWrapper
      * @data 2021/10/27
      */
+    @SaCheckRole(
+        value = {SUPER, COMMON},
+        mode = SaMode.OR)
     @PostMapping("/delete/combination")
     @ApiOperation("根据项目、学校、学科名称组合批量删除")
-    @PassToken
     public ResponseWrapper deleteRecordsByCombination(@RequestBody DeleteDTO deleteDTO) {
         ResponseWrapper responseWrapper;
-        if (deleteDTO.getProjectName() == "") {
+        if (Objects.equals(deleteDTO.getProjectName(), "")) {
             log.error("批量删除输入的项目名称为空");
             return ResponseWrapper.markDefault(999, "项目名称不能为空");
         }
@@ -289,7 +297,6 @@ public class RecordController {
      */
     @PostMapping("/search/teacher")
     @ApiOperation("根据老师名称模糊查询")
-    @PassToken
     public ResponseWrapper listRecordsByTeacherName(@RequestBody RecordQueryDTO queryDTO) {
         ResponseWrapper responseWrapper;
         try {
@@ -308,13 +315,11 @@ public class RecordController {
     /**
      * 获取所有记录
      *
-     * @param token
      * @return
      */
     @PostMapping("/search/all")
     @ApiOperation("获取所有记录")
-    public ResponseWrapper listAll(
-        @RequestBody RecordQueryDTO queryDTO, @RequestHeader("token") String token) {
+    public ResponseWrapper listAll(@RequestBody RecordQueryDTO queryDTO) {
         ResponseWrapper responseWrapper;
         try {
             List<Record> records = recordService.listAll(queryDTO);

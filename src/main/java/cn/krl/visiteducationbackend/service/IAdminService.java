@@ -8,8 +8,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
 /**
- * @description 管理员服务层接口
  * @author kuang
+ * @description 管理员服务层接口
  * @data 2021/10/24
  */
 public interface IAdminService extends IService<Admin> {
@@ -40,12 +40,13 @@ public interface IAdminService extends IService<Admin> {
     Admin getByName(String name);
 
     /**
-     * 校验密码是否正确
-     *
-     * @param changePasswrodDTO
-     * @return
+     * @param id
+     * @param pwd
+     * @description 检查密码
+     * @author kuang
+     * @date 2021/12/27
      */
-    boolean testPassword(ChangePasswrodDTO changePasswrodDTO);
+    boolean checkPassword(int id, String pwd);
 
     /**
      * 修改密码
@@ -76,4 +77,19 @@ public interface IAdminService extends IService<Admin> {
      * @return
      */
     boolean isSuper(int id);
+
+    /**
+     * @param id
+     * @description
+     * @author kuang
+     * @date 2021/12/27
+     */
+    List<String> getRoleList(int id);
+
+    /**
+     * @description hash散列密码
+     * @author kuang
+     * @date 2021/12/27
+     */
+    String hashPwd(String pwd, String salt);
 }

@@ -1,9 +1,10 @@
 package cn.krl.visiteducationbackend.controller;
 
-import cn.krl.visiteducationbackend.common.annotation.PassToken;
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.krl.visiteducationbackend.common.enums.AdminType;
 import cn.krl.visiteducationbackend.common.response.ResponseWrapper;
-import cn.krl.visiteducationbackend.common.utils.JwtUtil;
 import cn.krl.visiteducationbackend.model.dto.AdminDTO;
 import cn.krl.visiteducationbackend.model.dto.AdminQueryDTO;
 import cn.krl.visiteducationbackend.model.dto.ChangePasswrodDTO;
@@ -12,11 +13,6 @@ import cn.krl.visiteducationbackend.service.IAdminService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +28,8 @@ import java.util.List;
 @RequestMapping("/admin")
 @Slf4j
 public class AdminController {
-
+    private final String SUPER = "super";
+    private final String COMMON = "common";
     @Autowired
     private IAdminService adminService;
 
@@ -45,63 +42,44 @@ public class AdminController {
     @PostMapping("/login")
     @ApiOperation("管理员登录")
     @ResponseBody
-    @PassToken
     public ResponseWrapper adminLogin(@RequestBody AdminDTO adminDTO) {
         ResponseWrapper responseWrapper;
-
         String name = adminDTO.getName();
         String password = adminDTO.getPassword();
         Admin admin = adminService.getByName(name);
-        Subject subject = SecurityUtils.getSubject();
-
-        try {
-            subject.login(new UsernamePasswordToken(name, password));
-            String token =
-                JwtUtil.createToken(Integer.toString(admin.getId()), name, admin.getType());
+        int id = admin.getId();
+        if (adminService.checkPassword(id, password)) {
+            StpUtil.login(id);
             responseWrapper = ResponseWrapper.markSuccess();
             responseWrapper.setExtra("id", admin.getId());
             responseWrapper.setExtra("name", name);
             responseWrapper.setExtra("type", admin.getType());
-            responseWrapper.setExtra("token", token);
-        } catch (UnknownAccountException e) {
-            log.error("账号不存在");
-            e.printStackTrace();
-            responseWrapper = ResponseWrapper.markAccountError();
-        } catch (IncorrectCredentialsException e) {
-            log.error("账号或密码不正确");
-            e.printStackTrace();
-            responseWrapper = ResponseWrapper.markAccountError();
+            responseWrapper.setExtra("token", StpUtil.getTokenValue());
+        } else {
+            log.error("密码错误");
+            responseWrapper = ResponseWrapper.markPasswordError();
         }
         return responseWrapper;
     }
+
 
     /**
      * 管理员注册 只对超级管理员开发 只能注册普通管理员
      *
      * @param adminDTO 登录注册传输对象，包括用户名和密码
-     * @param token
      * @return
      */
+    // @SaCheckRole(value = SUPER)
     @PostMapping("/register")
     @ApiOperation("管理员注册")
     public ResponseWrapper register(
-        @RequestBody AdminDTO adminDTO, @RequestHeader("token") String token) {
+        @RequestBody AdminDTO adminDTO) {
         ResponseWrapper responseWrapper;
-        String type = JwtUtil.getClaimByName(token, "type").asString();
-
-        // 超级管理员才有权限
-        if (!AdminType.SUPER_ADMIN.getType().equals(type)) {
-            log.warn("无操作权限");
-            responseWrapper = ResponseWrapper.markApiNotPermission();
-            return responseWrapper;
-        }
-
         // 用户名已被占用
         if (adminService.exist(adminDTO.getName())) {
             responseWrapper = ResponseWrapper.markAdminExist();
             return responseWrapper;
         }
-
         try {
             String name = adminDTO.getName();
             String password = adminDTO.getPassword();
@@ -111,24 +89,23 @@ public class AdminController {
             e.printStackTrace();
             responseWrapper = ResponseWrapper.markError();
         }
-
         return responseWrapper;
     }
 
     /**
      * 账号退出
      *
-     * @param token
      * @return
      */
+    @SaCheckRole(
+        value = {SUPER, COMMON},
+        mode = SaMode.OR)
     @GetMapping("/logout")
     @ApiOperation("管理员退出")
-    public ResponseWrapper logout(@RequestHeader("token") String token) {
+    public ResponseWrapper logout() {
         ResponseWrapper responseWrapper;
-        Subject subject = null;
         try {
-            subject = SecurityUtils.getSubject();
-            subject.logout();
+            StpUtil.logout();
             responseWrapper = ResponseWrapper.markSuccess();
         } catch (Exception e) {
             e.printStackTrace();
@@ -143,27 +120,29 @@ public class AdminController {
      * @param changePasswrodDTO 修改密码传输对象
      * @return
      */
+    @SaCheckRole(
+        value = {SUPER, COMMON},
+        mode = SaMode.OR)
     @PostMapping("/changePassword")
     @ApiOperation("修改密码")
     public ResponseWrapper changePassword(
-        @RequestBody ChangePasswrodDTO changePasswrodDTO,
-        @RequestHeader("token") String token) {
+        @RequestBody ChangePasswrodDTO changePasswrodDTO) {
 
         ResponseWrapper responseWrapper;
-        int id = Integer.parseInt(JwtUtil.getAudience(token));
-        String type = JwtUtil.getClaimByName(token, "type").asString();
+        int id = Integer.parseInt(StpUtil.getLoginId().toString());
+        String type = adminService.getById(id).getType();
+        String pwd = changePasswrodDTO.getOldPassword();
 
         int targetId = changePasswrodDTO.getId();
-
         boolean isOK;
         if (AdminType.SUPER_ADMIN.getType().equals(type)) {
             // 超级管理员：普通管理员直接修改  其他超管不能修改  自己验证后修改
             isOK =
                 !adminService.isSuper(targetId)
-                    || (id == targetId && adminService.testPassword(changePasswrodDTO));
+                    || (id == targetId && adminService.checkPassword(id, pwd));
         } else {
             // 普通管理员：自己验证后修改
-            isOK = adminService.testPassword(changePasswrodDTO) && (id == targetId);
+            isOK = adminService.checkPassword(id, pwd) && (id == targetId);
         }
         if (isOK) {
             try {
@@ -176,7 +155,6 @@ public class AdminController {
         } else {
             responseWrapper = ResponseWrapper.markPasswordError();
         }
-
         return responseWrapper;
     }
 
@@ -184,39 +162,22 @@ public class AdminController {
      * 删除管理员
      *
      * @param deleteId
-     * @param token
      * @return
      */
+    @SaCheckRole(value = SUPER)
     @PostMapping("/delete")
     @ApiOperation("删除管理员")
     public ResponseWrapper delete(
-        @RequestParam Integer deleteId, @RequestHeader("token") String token) {
-
+        @RequestParam Integer deleteId) {
         ResponseWrapper responseWrapper;
-        int id = Integer.parseInt(JwtUtil.getAudience(token));
-
+        int id = Integer.parseInt(StpUtil.getLoginId().toString());
         // 不能删除自己  超级管理员不能删除
         if (id == deleteId || adminService.isSuper(deleteId)) {
             responseWrapper = ResponseWrapper.markApiNotPermission();
             return responseWrapper;
         }
-
-        String type = JwtUtil.getClaimByName(token, "type").asString();
-        // 超级管理员才有权限
-        if (!AdminType.SUPER_ADMIN.getType().equals(type)) {
-            log.warn("无操作权限");
-            responseWrapper = ResponseWrapper.markApiNotPermission();
-            return responseWrapper;
-        }
-
-        try {
-            adminService.removeById(deleteId);
-            responseWrapper = ResponseWrapper.markSuccess();
-        } catch (Exception e) {
-            e.printStackTrace();
-            responseWrapper = ResponseWrapper.markError();
-        }
-
+        adminService.removeById(deleteId);
+        responseWrapper = ResponseWrapper.markSuccess();
         return responseWrapper;
     }
 
@@ -225,6 +186,9 @@ public class AdminController {
      *
      * @return
      */
+    @SaCheckRole(
+        value = {SUPER, COMMON},
+        mode = SaMode.OR)
     @PostMapping("/search/all")
     @ApiOperation("列出所有管理员")
     public ResponseWrapper listAll(@RequestBody AdminQueryDTO queryDTO) {

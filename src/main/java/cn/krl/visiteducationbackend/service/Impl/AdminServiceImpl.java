@@ -2,33 +2,35 @@ package cn.krl.visiteducationbackend.service.Impl;
 
 import cn.krl.visiteducationbackend.common.enums.AdminType;
 import cn.krl.visiteducationbackend.common.utils.SaltUtil;
+import cn.krl.visiteducationbackend.mapper.AdminMapper;
 import cn.krl.visiteducationbackend.model.dto.AdminQueryDTO;
 import cn.krl.visiteducationbackend.model.dto.ChangePasswrodDTO;
 import cn.krl.visiteducationbackend.model.vo.Admin;
-import cn.krl.visiteducationbackend.mapper.AdminMapper;
 import cn.krl.visiteducationbackend.service.IAdminService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @description 管理员服务层实现类
  * @author kuang
+ * @description 管理员服务层实现类
  * @data 2021/10/24
  */
 @Service
 public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements IAdminService {
 
-    @Autowired private AdminMapper adminMapper;
+    @Autowired
+    private AdminMapper adminMapper;
 
     @Override
     public boolean exist(String name) {
-        QueryWrapper queryWrapper = new QueryWrapper();
+        QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("name", name);
         return !adminMapper.selectList(queryWrapper).isEmpty();
     }
@@ -37,10 +39,10 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     public boolean register(String name, String password) {
         try {
             String salt = SaltUtil.getSalt(8);
-            Md5Hash md5Hash = new Md5Hash(password, salt, 1024);
+            String hashedPwd = hashPwd(password, salt);
             Admin admin = new Admin();
             admin.setName(name);
-            admin.setPassword(md5Hash.toHex());
+            admin.setPassword(hashedPwd);
             admin.setSalt(salt);
             admin.setType("common");
             admin.setGmtModified(System.currentTimeMillis());
@@ -55,27 +57,19 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
     @Override
     public Admin getByName(String name) {
-        QueryWrapper queryWrapper = new QueryWrapper();
+        QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("name", name);
         return adminMapper.selectOne(queryWrapper);
     }
 
     @Override
-    public boolean testPassword(ChangePasswrodDTO changePasswrodDTO) {
-
+    public boolean checkPassword(int id, String pwd) {
         // 数据库存储的密码（经过salt hash散列）
-        int id = changePasswrodDTO.getId();
         Admin admin = adminMapper.selectById(id);
         String password1 = admin.getPassword();
-
         // 前端发送的密码
-        String oldPassword = changePasswrodDTO.getOldPassword();
         String salt = admin.getSalt();
-        Md5Hash md5Hash = new Md5Hash(oldPassword, salt, 1024);
-        String password2 = md5Hash.toHex();
-        System.out.println(password1);
-        System.out.println(password2);
-        System.out.println(password1.equals(password2));
+        String password2 = hashPwd(pwd, salt);
         return password1.equals(password2);
     }
 
@@ -89,8 +83,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
             // 更新密码、修改时间
             String salt = admin.getSalt();
             String newPassword = changePasswrodDTO.getNewPassword();
-            Md5Hash md5Hash = new Md5Hash(newPassword, salt, 1024);
-            admin.setPassword(md5Hash.toHex());
+            String hashedPwd = hashPwd(newPassword, salt);
+            admin.setPassword(hashedPwd);
             admin.setGmtModified(System.currentTimeMillis());
             adminMapper.updateById(admin);
             return true;
@@ -120,5 +114,19 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     public boolean isSuper(int id) {
         Admin admin = adminMapper.selectById(id);
         return AdminType.SUPER_ADMIN.getType().equals(admin.getType());
+    }
+
+    @Override
+    public List<String> getRoleList(int id) {
+        Admin admin = adminMapper.selectById(id);
+        List<String> roles = new ArrayList<>();
+        roles.add(admin.getType());
+        return roles;
+    }
+
+    @Override
+    public String hashPwd(String pwd, String salt) {
+        String mixedStr = pwd + salt;
+        return DigestUtils.md5DigestAsHex(mixedStr.getBytes());
     }
 }

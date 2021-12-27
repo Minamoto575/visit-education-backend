@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @description 响应包装类 返回给前端
  * @author kuang
+ * @description 响应包装类 返回给前端
  * @data 2021/10/24
  */
 @Data
@@ -23,10 +23,15 @@ public class ResponseWrapper {
     private String msg;
     private Map<String, Object> extra;
 
-    /** 私有的构造函数 */
-    private ResponseWrapper() {}
+    /**
+     * 私有的构造函数
+     */
+    private ResponseWrapper() {
+    }
 
-    /** 自定义返回结果 */
+    /**
+     * 自定义返回结果
+     */
     public static ResponseWrapper markDefault(int code, String msg) {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(code);
@@ -34,7 +39,9 @@ public class ResponseWrapper {
         return responseWrapper;
     }
 
-    /** 查询成功且有数据 */
+    /**
+     * 查询成功且有数据
+     */
     public static ResponseWrapper markSuccess() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
@@ -42,7 +49,9 @@ public class ResponseWrapper {
         return responseWrapper;
     }
 
-    /** 操作成功，但无记录 */
+    /**
+     * 操作成功，但无记录
+     */
     public static ResponseWrapper markNoData() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.NODATA.getCode());
@@ -50,7 +59,9 @@ public class ResponseWrapper {
         return responseWrapper;
     }
 
-    /** 操作成功，但记录已存在 */
+    /**
+     * 操作成功，但记录已存在
+     */
     public static ResponseWrapper markDataExisted() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.DATA_EXISTED.getCode());
@@ -58,7 +69,9 @@ public class ResponseWrapper {
         return responseWrapper;
     }
 
-    /** 参数为空或者参数格式错误 */
+    /**
+     * 参数为空或者参数格式错误
+     */
     public static ResponseWrapper markParamError() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.PARAMS_ERROR.getCode());
@@ -66,7 +79,9 @@ public class ResponseWrapper {
         return responseWrapper;
     }
 
-    /** 查询失败 */
+    /**
+     * 查询失败
+     */
     public static ResponseWrapper markError() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.FAILED.getCode());
@@ -74,7 +89,9 @@ public class ResponseWrapper {
         return responseWrapper;
     }
 
-    /** 无效URL链接 */
+    /**
+     * 无效URL链接
+     */
     public static ResponseWrapper markUrlError() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.URL_ERROR.getCode());
@@ -82,7 +99,9 @@ public class ResponseWrapper {
         return responseWrapper;
     }
 
-    /** 系统异常 */
+    /**
+     * 系统异常
+     */
     public static ResponseWrapper markSystemError() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.SYSTEM_ERROR.getCode());
@@ -90,7 +109,9 @@ public class ResponseWrapper {
         return responseWrapper;
     }
 
-    /** 没有该API访问权限 */
+    /**
+     * 没有该API访问权限
+     */
     public static ResponseWrapper markApiNotPermission() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.API_NOT_PER.getCode());
@@ -110,7 +131,9 @@ public class ResponseWrapper {
         return responseWrapper;
     }
 
-    /** 用户名已被使用 */
+    /**
+     * 用户名已被使用
+     */
     public static ResponseWrapper markAdminExist() {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.ADMIN_EXIST.getCode());
@@ -154,10 +177,41 @@ public class ResponseWrapper {
         return responseWrapper;
     }
 
+
+    /**
+     * 未登录异常
+     */
+    public static ResponseWrapper markNotLoginError() {
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        responseWrapper.setCode(ResponseCode.NOTLOGIN_ERROR.getCode());
+        responseWrapper.setMsg(ResponseCode.NOTLOGIN_ERROR.getMsg());
+        return responseWrapper;
+    }
+
+    /**
+     * 没有对应角色
+     */
+    public static ResponseWrapper markNoRoleError() {
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        responseWrapper.setCode(ResponseCode.NO_ROLE_ERROR.getCode());
+        responseWrapper.setMsg(ResponseCode.NO_ROLE_ERROR.getMsg());
+        return responseWrapper;
+    }
+
+    /**
+     * 没有对应权限
+     */
+    public static ResponseWrapper markNoPermissionError() {
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        responseWrapper.setCode(ResponseCode.NO_PERMISSION.getCode());
+        responseWrapper.setMsg(ResponseCode.NO_PERMISSION.getMsg());
+        return responseWrapper;
+    }
+
     /**
      * 包装ResponseWrapper
      *
-     * @param tag Tag名称
+     * @param tag       Tag名称
      * @param jsonArray JSON数据
      * @return ResponseWrapper
      */

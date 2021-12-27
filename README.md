@@ -30,3 +30,8 @@ shiro也可以产生token 不需要用到jwt
 
 查看`jar`包是否正常运行 `ps -ef|grep java`
 
+**2021.12.27**
+
+弃用jwt和shiro，采用sa-token
+
+测试人员账号密码： `test` `whucs123`

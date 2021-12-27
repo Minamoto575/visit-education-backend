@@ -1,6 +1,7 @@
 package cn.krl.visiteducationbackend.controller;
 
-import cn.krl.visiteducationbackend.common.annotation.PassToken;
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.krl.visiteducationbackend.common.response.ResponseWrapper;
 import cn.krl.visiteducationbackend.model.vo.Notice;
 import cn.krl.visiteducationbackend.service.INoticeService;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/notice")
 @Slf4j
 public class NoticeController {
+    private final String SUPER = "super";
+    private final String COMMON = "common";
     @Autowired
     private INoticeService noticeService;
 
@@ -29,9 +32,12 @@ public class NoticeController {
      * @author kuang
      * @date 2021/12/15
      */
+    @SaCheckRole(
+        value = {SUPER, COMMON},
+        mode = SaMode.OR)
     @PostMapping("/post")
     @ApiOperation("发布一条新的通知")
-    public ResponseWrapper postNotice(@RequestParam("content") String content, @RequestHeader("token") String token) {
+    public ResponseWrapper postNotice(@RequestParam("content") String content) {
         ResponseWrapper responseWrapper;
         try {
             noticeService.insert(content);
@@ -51,7 +57,6 @@ public class NoticeController {
      */
     @GetMapping("/getLatest")
     @ApiOperation("获取最新的通知")
-    @PassToken
     public ResponseWrapper getLatestNotice() {
         ResponseWrapper responseWrapper;
         Notice notice = noticeService.getLatest();
