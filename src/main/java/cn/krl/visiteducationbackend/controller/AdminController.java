@@ -69,7 +69,7 @@ public class AdminController {
      * @param adminDTO 登录注册传输对象，包括用户名和密码
      * @return
      */
-    // @SaCheckRole(value = SUPER)
+    @SaCheckRole(value = SUPER)
     @PostMapping("/register")
     @ApiOperation("管理员注册")
     public ResponseWrapper register(
